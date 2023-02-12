@@ -7,4 +7,6 @@ const User = new Schema({
    block:{type: String},
 },{timestamps:true})
 
+
+
 module.exports = model('User', User);

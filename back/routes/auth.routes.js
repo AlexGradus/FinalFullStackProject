@@ -1,11 +1,13 @@
 const Router = require("express");
 const User = require("../models/User");
+const UserCollection = require("../models/UserCollection");
 const bcrypt = require("bcrypt");
 const config = require("config");
 const {check, validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const router = new Router();
 const authMiddleWare = require("../middleware/auth.middleware");
+const mongoose = require("mongoose");
 
 router.post('/registration',[
     check('email','incorrect email').isEmail(),
@@ -38,8 +40,6 @@ router.post('/login',async (req, res) =>{
     try {
         const {email, password, name} = req.body;
         const user = await User.findOne({email});
-        console.log("!");
-       console.log(user);
         if(!user){
             return res.status(404).json({message:`User not found`})
         }
@@ -59,6 +59,36 @@ router.post('/login',async (req, res) =>{
                 name: user.name
             }
         })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/createcollection',async (req, res) =>{
+    try {
+        const {email, collectionName, collectionType, collectionMarkDownValue,collectionImage} = req.body;
+        if(collectionName.length==0||collectionType.length==0){
+            return res.status(404).json({message:`Name(Type) has to have at least one character!`})
+        }
+       
+       const collectionDouble = await UserCollection.findOne({email,"collections.collectionName":collectionName});
+       if(collectionDouble){
+        return res.status(400).json({message:`Collection already exists!`})
+       }
+        const collectionUpdate = await UserCollection.findOne({email});
+        
+        if(collectionUpdate){
+            const result = await UserCollection.updateOne({email:email},{$push:{collections:[{collectionName,collectionType,collectionMarkDownValue,collectionImage}]}});
+           return res.json({
+             result
+          })
+        }
+       
+        const collection = new UserCollection({ email,collections:[{collectionName,collectionType,collectionMarkDownValue,collectionImage}]});
+        await collection.save();
+        return res.json({message:'Collection is created'});
 
     } catch(e){
         console.log(e);

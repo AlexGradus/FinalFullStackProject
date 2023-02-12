@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 export const deleteUser = async(checked:string)=>{
     try{
         const response = await axios.post("http://localhost:5000/api/auth/delete",{

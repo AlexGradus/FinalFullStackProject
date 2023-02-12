@@ -4,3 +4,7 @@
     margin: 0 auto;
     top:50px;
 }
+
+.dragBox{
+    display: flex;
+}

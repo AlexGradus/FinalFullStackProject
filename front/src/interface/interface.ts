@@ -1,8 +1,9 @@
 export interface MyState {
     app:{
-      currentUser:Array<string>;
+      currentUser: any;
       isAuth: boolean;
-      users:Array<string>;
+      users: Array<string>;
+      currentMode: string;
     }
     
   }
