@@ -68,7 +68,7 @@ router.post('/login',async (req, res) =>{
 
 router.post('/createcollection',async (req, res) =>{
     try {
-        const {email, collectionName, collectionType, collectionMarkDownValue,collectionImage} = req.body;
+        const {email, collectionName, collectionType, collectionMarkDownValue,addedFields,fieldsLocation,collectionImage} = req.body;
         if(collectionName.length==0||collectionType.length==0){
             return res.status(404).json({message:`Name(Type) has to have at least one character!`})
         }
@@ -80,15 +80,65 @@ router.post('/createcollection',async (req, res) =>{
         const collectionUpdate = await UserCollection.findOne({email});
         
         if(collectionUpdate){
-            const result = await UserCollection.updateOne({email:email},{$push:{collections:[{collectionName,collectionType,collectionMarkDownValue,collectionImage}]}});
-           return res.json({
-             result
-          })
+            const result = await UserCollection.updateOne({email:email},{$push:{collections:[{collectionName,collectionType,collectionMarkDownValue,addedFields,fieldsLocation,collectionImage}]}});
+            return res.json({message:'Collection is created'});
         }
        
-        const collection = new UserCollection({ email,collections:[{collectionName,collectionType,collectionMarkDownValue,collectionImage}]});
+        const collection = new UserCollection({ email,collections:[{collectionName,collectionType,collectionMarkDownValue,addedFields,fieldsLocation,collectionImage}]});
         await collection.save();
         return res.json({message:'Collection is created'});
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/editcollection',async (req, res) =>{
+    try {
+        const {email,index, collectionName,collectionType,collectionMarkDownValue,addedFields,fieldsLocation,collectionImage } = req.body;
+       
+       
+       const collection = await UserCollection.findOne({email});
+       collection.collections.splice(index,1,{collectionName,collectionType,collectionMarkDownValue,addedFields,fieldsLocation,collectionImage}) 
+       const result = await UserCollection.updateOne({email:email},{$set:{collections:collection.collections}});
+       
+      
+       return res.json({
+         result
+     })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/collections', async (req, res) =>{
+    try {
+        const {email} = req.body;
+       const collection = await UserCollection.findOne({email});
+        return res.json({
+            collection
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+router.post('/deletecollection', async (req, res) =>{
+    try {
+        const { email, index } = req.body;
+        const collection = await UserCollection.findOne({email});
+      collection.collections.splice(index,1) 
+      const result = await UserCollection.updateOne({email:email},{$set:{collections:collection.collections}});
+      
+     
+      return res.json({
+        result
+    })
+       
 
     } catch(e){
         console.log(e);

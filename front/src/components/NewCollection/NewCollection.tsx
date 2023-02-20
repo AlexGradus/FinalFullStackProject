@@ -6,7 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { TextField } from '@mui/material';
+import { Alert, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import InputLabel from '@mui/material/InputLabel';
@@ -22,13 +22,17 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
 
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+
+
 // <MDEditor.Markdown source={value} style={{ whiteSpace: 'pre-wrap' }} />
 
 
 
 export default function NewCollection() {
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
-  console.log(userEmail);
+  const [alertContent, setAlertContent] = useState('');
   
   const [markDownValue, setMarkDownValue] = useState('' as string | undefined);
   const [ImagesForChoise,setImagesForChoise] = useState(ImagesForChoiseFull);
@@ -117,27 +121,61 @@ export default function NewCollection() {
   }
   setImagesForChoise(newImagesForChoise);
   }
-  const createCollection = async( email: string, collectionName: string, collectionType: string, collectionMarkDownValue: string,collectionImage: any)=>{
+  const createCollection = async( email: string, collectionName: string, collectionType: string, collectionMarkDownValue: string,addedFields: string[],fieldsLocation:boolean[],collectionImage: any)=>{
     try{
         const response = await axios.post("http://localhost:5000/api/auth/createcollection",{
           email,
           collectionName,
           collectionType,
           collectionMarkDownValue,
+          addedFields,
+          fieldsLocation,
           collectionImage
         })
-      console.log(response.data.message);
+        setAlertContent(response.data.message);
     } catch(e){
       if (axios.isAxiosError(e))  {
-        alert(e.response?.data.message );
+        setAlertContent(e.response?.data.message );
       } 
     }
    
   }
+  const fields = ['madeIn','description','comments','damage','condition','notes','forSale','foreign','inStock','created','bought','firstRegistration','amount',' readyToSail','cost'];
+  const [checked, setChecked] = React.useState([false, false,false, false,false, false,false, false,false, false,false, false,false, false,false]);
 
-  const SendData = ()=>(
-    createCollection(userEmail,name,type,markDownValue,...ImagesForChoise.columns['column-2'].imagesId)
-  )
+  const additionalFieldsCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const used=checked.map((item)=>item=event.target.checked)
+    setChecked(used);
+  };
+  const additionalFieldsCheck = (event: React.ChangeEvent<HTMLInputElement>,index:number) => {
+    const used=checked.map((item,i)=>i===index?item=event.target.checked:item)
+    setChecked(used);
+  };
+    
+  const SendData = ()=>{
+    const addFields=[] as string[];
+    fields.forEach((item,index)=>{
+      if(checked[index]===true){
+        addFields.push(item)
+      }
+    })
+    createCollection(userEmail,name,type,markDownValue,addFields,checked,...ImagesForChoise.columns['column-2'].imagesId)
+    
+    setMarkDownValue('');
+    setType('');
+    setName('');
+    setImagesForChoise(ImagesForChoiseFull);
+    const used=checked.map((item)=>item=false)
+    setChecked(used);
+    
+  
+  }
+ 
+
+ 
+
+
+  
 
 
   return (
@@ -183,6 +221,32 @@ export default function NewCollection() {
       />
         
       </Box>
+      <Box>
+      <Typography mt={2} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+       Additional fields for Item
+      </Typography>
+    <FormControlLabel
+      label="All"
+      control={
+        <Checkbox
+          checked={checked[0] && checked[1]}
+          indeterminate={checked[0] !== checked[1]}
+          onChange={additionalFieldsCheckAll}
+        />
+      }
+    />
+    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+    {
+          fields.map((item,index)=>{
+           
+            return <FormControlLabel key={index} label = { item } control={<Checkbox checked={checked[index]} onChange={e =>additionalFieldsCheck(e,index)} />}/>
+          })
+        }
+
+    </Box>
+  </Box>
+
+
       
         <Container>
           <DragDropContext
@@ -210,8 +274,8 @@ export default function NewCollection() {
               onClick={SendData}
             >
               Create
-            </Button>
-      
+          </Button>
+          {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
 
     
      

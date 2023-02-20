@@ -2,6 +2,7 @@ const SET_USER = "SET_USER";
 const LOGOUT ="LOGOUT";
 const SET_DARK_MODE ="SET_DARK_MODE";
 
+
 const defaultState = {
 currentUser: {},
 isAuth: false,
@@ -11,7 +12,8 @@ currentMode:false,
 export default function appReducer(state=defaultState,action: {
     mode: any;
     user: any;
-     type: any 
+     type: any;
+     foreign: any; 
 }){
     switch(action.type){
         case SET_USER:
