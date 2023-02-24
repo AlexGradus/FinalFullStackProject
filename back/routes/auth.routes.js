@@ -1,5 +1,6 @@
 const Router = require("express");
 const User = require("../models/User");
+const UserItems = require("../models/UserItems");
 const UserCollection = require("../models/UserCollection");
 const bcrypt = require("bcrypt");
 const config = require("config");
@@ -94,6 +95,95 @@ router.post('/createcollection',async (req, res) =>{
     }
 })
 
+router.post('/createitem',async (req, res) =>{
+    try {
+        const {email,
+               collectionName,
+               itemName,
+               id,
+               condition,
+               damage,
+               comments,
+               description,
+               notes,
+               forSale,
+               foreign,
+               inStock,
+               created,
+               bought,
+               firstRegistration,
+               amount,
+               readyToSail,
+               cost,
+               addedFields,
+               fieldsLocation
+               
+               } = req.body;
+        if(itemName.length==0||id.length==0){
+            return res.status(404).json({message:`Name(id) has to have at least one character!`})
+        }
+       
+       const itemDouble = await UserItems.findOne({email,collectionName,"colItems.itemName":itemName});
+       if(itemDouble){
+        return res.status(400).json({message:`Item already exists!`})
+       }
+       const IdDouble = await UserItems.findOne({email,collectionName,"colItems.id":id});
+       if(IdDouble){
+        return res.status(400).json({message:`Id already exists!`})
+       }
+        const itemUpdate = await UserItems.findOne({email,collectionName});
+        
+        if(itemUpdate){
+            const result = await UserItems.updateOne({email:email,collectionName:collectionName},{$push:{colItems:[{ itemName,
+                id,
+                condition,
+                damage,
+                comments,
+                description,
+                notes,
+                forSale,
+                foreign,
+                inStock,
+                created,
+                bought,
+                firstRegistration,
+                amount,
+                readyToSail,
+                cost,
+                
+               
+              }]}});
+              await UserItems.updateOne({email:email,collectionName:collectionName},{$set:{fieldsLocation:fieldsLocation}});
+            return res.json({message:'Item is created'});
+        }
+       
+        const item = new UserItems({ email,collectionName,fieldsLocation,colItems:[{ itemName,
+            id,
+            condition,
+            damage,
+            comments,
+            description,
+            notes,
+            forSale,
+            foreign,
+            inStock,
+            created,
+            bought,
+            firstRegistration,
+            amount,
+            readyToSail,
+            cost,
+         
+            }]});
+        await item.save();
+        return res.json({message:'Item is created'});
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
 router.post('/editcollection',async (req, res) =>{
     try {
         const {email,index, collectionName,collectionType,collectionMarkDownValue,addedFields,fieldsLocation,collectionImage } = req.body;
@@ -114,6 +204,19 @@ router.post('/editcollection',async (req, res) =>{
     }
 })
 
+router.post('/items', async (req, res) =>{
+    try {
+        const {email,collectionName} = req.body;
+       const items = await UserItems.findOne({email,collectionName});
+        return res.json({
+            items
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
 router.post('/collections', async (req, res) =>{
     try {
         const {email} = req.body;
@@ -133,6 +236,34 @@ router.post('/deletecollection', async (req, res) =>{
         const collection = await UserCollection.findOne({email});
       collection.collections.splice(index,1) 
       const result = await UserCollection.updateOne({email:email},{$set:{collections:collection.collections}});
+      
+     
+      return res.json({
+        result
+    })
+       
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/deleteitem', async (req, res) =>{
+    try {
+        const { email,collectionName, id } = req.body;
+        const items = await UserItems.findOne({email,collectionName});
+        const improvedItems = [];
+       
+        items.colItems.forEach(item=>{
+           
+               if (!(item.id==id)) {
+               improvedItems.push(item);
+             }
+        })
+       
+      
+      const result = await UserItems.updateOne({email:email,collectionName:collectionName},{$set:{colItems:improvedItems}});
       
      
       return res.json({

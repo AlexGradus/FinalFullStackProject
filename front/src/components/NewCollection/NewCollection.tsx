@@ -140,7 +140,7 @@ export default function NewCollection() {
     }
    
   }
-  const fields = ['madeIn','description','comments','damage','condition','notes','forSale','foreign','inStock','created','bought','firstRegistration','amount',' readyToSail','cost'];
+  const fields = ['Made In','Description','Comments','Damage','Condition','Notes','For Sale','Foreign','In Stock','Created','Bought','First Registration','Amount','Ready To Sail','Cost'];
   const [checked, setChecked] = React.useState([false, false,false, false,false, false,false, false,false, false,false, false,false, false,false]);
 
   const additionalFieldsCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {

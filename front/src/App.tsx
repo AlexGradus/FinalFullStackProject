@@ -15,6 +15,7 @@ import WelcomePage from './pages/WelcomePage';
 import MyAccountPage from './pages/MyAccountPage';
 import NewCollection from './components/NewCollection';
 import ItemPage from './pages/ItemPage';
+import NewItem from './components/NewItem';
 
 function App() {
   const darkMode = useSelector((state:MyState)=>state.app.currentMode);
@@ -46,6 +47,8 @@ function App() {
            <Route path='/myaccount' element={<MyAccountPage/>}/>
            <Route path='/myaccount/newcollection' element={<NewCollection/>}/>
            <Route path='/myaccount/items' element={<ItemPage/>}/>
+           <Route path='/myaccount/items/item' element={<ItemPage/>}/>
+           <Route path='/myaccount/items/newitem' element={<NewItem/>}/>
      </Routes>}
      </ThemeProvider>
      

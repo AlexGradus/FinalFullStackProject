@@ -79,6 +79,8 @@ useEffect(() => {
 
 const saveCollectionName = (name: string) =>
   localStorage.setItem("CollectionName", JSON.stringify(name));
+  const saveCollectionIndex = (index: number) =>
+  localStorage.setItem("CollectionIndex", JSON.stringify(index));
  
 return (
     <Container >
@@ -114,6 +116,7 @@ return (
             <Link className={s.textLink} to={'/myaccount/items'}>
               <Container onClick={() => {
                   saveCollectionName(colItem.collectionName);
+                  saveCollectionIndex(index);
                 }}>
               {colItem.hasOwnProperty("collectionImage")&&<Box><img width ='100px' src={images[colItem.collectionImage]} alt='img'/></Box>}
              <Box className={s.text}>
