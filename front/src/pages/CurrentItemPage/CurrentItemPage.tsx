@@ -17,84 +17,141 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Modal from '@mui/material/Modal';
 import NewItem from '../../components/NewItem';
-import { off } from 'process';
-import ItemActions from './ItemActions';
+
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
+import EditItem from './EditItem';
 
 
 
-
-export default function ItemPage() {
-  const [items, setItems] = useState([]);
-  const [checkedData, setCheckedData] = useState('');
-  const [columns, setColumns] = useState([
-    ]);
-  
-  console.log(items);
+export default function CurrentItem() {
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
-  const navigate = useNavigate();
-  const CreateNewItem = () =>{
-    navigate("/myaccount/items/newitem");
-}
-const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
-const fields = ['madeIn','description','comments','damage','condition','notes','forSale','foreign','inStock','created','bought','firstRegistration','amount','readyToSail','cost']
-const getItems = async(email:string,collectionName:string)=>{
-  try{
-      await axios.post("http://localhost:5000/api/auth/items",{
-        email,collectionName
-      }).then(res => {
-        
-        setItems(res.data.items.colItems);
-        const UsedFields: GridColDef[] = [
-          { 
-            field: 'actions',
-            headerName: 'Actions',
-             width: 250,
-            renderCell:(params)=><ItemActions {...{params,getItems}} />
-            },
-          { field: 'id', headerName: 'ID', width: 250},
-          { field: 'itemName', headerName: 'Name', width: 150 },
-          
-        ];
-        res.data.items.fieldsLocation.map((item,index)=>{
-          if(item){
-           
-            UsedFields.push({field:fields[index],headerName: fields[index], width: 150})
-          }
-        })
-        setColumns(UsedFields);
-  
-      })
-     
-  } catch(e){
-    if (axios.isAxiosError(e))  {
-      alert(e.response?.data.message );
-    } 
-  }
-}
-useEffect(() => {
-  getItems(userEmail,collectionName)
-},[]);
+  const itemId = JSON.parse( localStorage.getItem("ItemId") as string );
+  const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
+  const [currentItem, setCurrentItem] = useState(null as any);
 
+  const getCurrentItem = async(email:string,collectionName:string,id: string)=>{
+    try{
+        await axios.post("http://localhost:5000/api/auth//currentitem",{
+          email,collectionName,id
+        }).then(res => {
+          setCurrentItem(res.data.result);
+         
+          
+    
+        })
+       
+    } catch(e){
+      if (axios.isAxiosError(e))  {
+        console.log(e.response?.data.message );
+      } 
+    }
+  }
+  useEffect(() => {
+    getCurrentItem(userEmail,collectionName,itemId)
+  },[]);
 
  
 return (
-    <Container >
-        <Typography mt={2} align='center' component="h5" variant="h5">
-            My Collection :"{collectionName}"
-          </Typography>
-      <Box mt={3}>
-      <Button onClick={CreateNewItem}  variant="outlined">Create New Item</Button>
-      </Box>
-      <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={items}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        />
-    </div>
+  <Card sx={{ width: 275 }}>
+  <CardContent>
+  <div>
+        Current Item: {currentItem?currentItem.item.itemName:''}
+   </div>
+   <div>
+        Id: {currentItem?currentItem.item.id:''}
+   </div>
+   {currentItem?currentItem.fieldsLocation[0]? <Box>
+   <div>
+        Made In: {currentItem?currentItem.item.madeIn:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[1]? <Box>
+   <div>
+       Description: <MDEditor.Markdown source={currentItem?currentItem.item.description:''} style={{ whiteSpace: 'pre-wrap' }} />
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[2]? <Box>
+   <div>
+       Comments: <MDEditor.Markdown source={currentItem?currentItem.item.comments:''} style={{ whiteSpace: 'pre-wrap' }} />
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[3]? <Box>
+   <div>
+        Damage: {currentItem?currentItem.item.damage:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[4]? <Box>
+   <div>
+        Condition: {currentItem?currentItem.item.condition:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[5]? <Box>
+   <div>
+       Notes: <MDEditor.Markdown source={currentItem?currentItem.item.notes:''} style={{ whiteSpace: 'pre-wrap' }} />
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[6]? <Box>
+   <div>
+        For Sale: {currentItem?`${currentItem.item.forSale}`:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[7]? <Box>
+   <div>
+        Foreign: {currentItem?`${currentItem.item.foreign}`:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[8]? <Box>
+   <div>
+        In Stock: {currentItem?`${currentItem.item.inStock}`:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[9]? <Box>
+   <div>
+        Created: {currentItem?currentItem.item.created:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[10]? <Box>
+   <div>
+       Bought: {currentItem?currentItem.item.bought:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[11]? <Box>
+   <div>
+       First Registration: {currentItem?currentItem.item.firstRegistration:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[12]? <Box>
+   <div>
+        Amount: {currentItem?currentItem.item.amount:''}
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[13]? <Box>
+   <div>
+       Ready To Sail: {currentItem?currentItem.item.readyToSail:''} $
+   </div>
+   </Box>: <></>:'' }
+   {currentItem?currentItem.fieldsLocation[14]? <Box>
+   <div>
+       Cost: {currentItem?currentItem.item.cost:''} $
+   </div>
+   </Box>: <></>:'' }
 
-      
-    </Container>
+
+  </CardContent>
+  <CardActions>
+  <React.Fragment >
+                  <EditItem
+                    data={currentItem}
+                    getCurrentItem={getCurrentItem}
+                   
+  
+                  />
+            </React.Fragment>
+  </CardActions>
+</Card>
+
+  
   );
 }

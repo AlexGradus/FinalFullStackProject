@@ -29,7 +29,6 @@ export default function ItemPage() {
   const [columns, setColumns] = useState([
     ]);
   
-  console.log(items);
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
   const navigate = useNavigate();
   const CreateNewItem = () =>{

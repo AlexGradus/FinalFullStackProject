@@ -32,9 +32,14 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const ChangeToMyAccount = ()=>{
     setAnchorEl(null);
     navigate("/myaccount");
+  }
+  const ChangeToAdminPage = ()=>{
+    setAnchorEl(null);
+    navigate("/adminpage");
   }
   const dispatch = useDispatch();
   const darkMode = useSelector((state:MyState)=>state.app.currentMode);
@@ -87,7 +92,7 @@ export default function Header() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Admin</MenuItem>
+                <MenuItem onClick={ChangeToAdminPage}>Admin</MenuItem>
                 <MenuItem onClick={ChangeToMyAccount}>My account</MenuItem>
               </Menu>
             </div>

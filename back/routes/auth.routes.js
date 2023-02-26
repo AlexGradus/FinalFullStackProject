@@ -101,6 +101,7 @@ router.post('/createitem',async (req, res) =>{
                collectionName,
                itemName,
                id,
+               madeIn,
                condition,
                damage,
                comments,
@@ -136,6 +137,7 @@ router.post('/createitem',async (req, res) =>{
         if(itemUpdate){
             const result = await UserItems.updateOne({email:email,collectionName:collectionName},{$push:{colItems:[{ itemName,
                 id,
+                madeIn,
                 condition,
                 damage,
                 comments,
@@ -159,6 +161,7 @@ router.post('/createitem',async (req, res) =>{
        
         const item = new UserItems({ email,collectionName,fieldsLocation,colItems:[{ itemName,
             id,
+            madeIn,
             condition,
             damage,
             comments,
@@ -177,6 +180,70 @@ router.post('/createitem',async (req, res) =>{
             }]});
         await item.save();
         return res.json({message:'Item is created'});
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/edititem', async (req, res) =>{
+    try {
+        const {email,
+               collectionName,
+               itemName,
+               id,
+               madeIn,
+               condition,
+               damage,
+               comments,
+               description,
+               notes,
+               forSale,
+               foreign,
+               inStock,
+               created,
+               bought,
+               firstRegistration,
+               amount,
+               readyToSail,
+               cost,
+               originalId} = req.body;
+        const items = await UserItems.findOne({email,collectionName});
+        const editedItems = []
+        items.colItems.forEach(item=>{
+           
+            if (item.id==originalId) {
+                item.itemName = itemName;
+                item.collectionName = collectionName;
+                item.id = id;
+                item.madeIn = madeIn;
+                item.condition = condition;
+                item.damage = damage;
+                item.comments = comments;
+                item.description = description;
+                item.notes = notes;
+                item.forSales = forSale;
+                item.foreign = foreign;
+                item.inStock = inStock;
+                item.created = created;
+                item.bought = bought;
+                item.firstRegistration = firstRegistration;
+                item.amount = amount;
+                item.readyToSail = readyToSail;
+                item.cost = cost;
+          } 
+
+          editedItems.push(item);
+         
+     })
+     const result = await UserItems.updateOne({email:email,collectionName:collectionName},{$set:{colItems:editedItems}});
+
+     return res.json({
+        result
+    }) 
+        
+        
 
     } catch(e){
         console.log(e);
@@ -217,6 +284,7 @@ router.post('/items', async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+
 router.post('/collections', async (req, res) =>{
     try {
         const {email} = req.body;
@@ -276,6 +344,31 @@ router.post('/deleteitem', async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+
+router.post('/currentitem', async (req, res) =>{
+    try {
+        const {email,collectionName,id} = req.body;
+        const items = await UserItems.findOne({email,collectionName});
+        let result = {fieldsLocation:items.fieldsLocation};
+        items.colItems.forEach(item=>{
+           
+            if (item.id==id) {
+                result.item=item;
+          } 
+         
+     })
+     return res.json({
+        result
+    }) 
+        
+        
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
 
 router.get('/auth',authMiddleWare, async (req, res) =>{
     try {

@@ -1,60 +1,61 @@
 import * as React from 'react';
 import { s } from '.';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import { Alert, TextField } from '@mui/material';
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Alert, CardContent, Input, TextField } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Container } from '@mui/system';
 import MDEditor from '@uiw/react-md-editor';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
-import { styled } from '@mui/material/styles';
-import Slider from '@mui/material/Slider';
-import MuiInput from '@mui/material/Input';
-import VolumeUp from '@mui/icons-material/VolumeUp';
-import Grid from '@mui/material/Grid';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
+import dayjs, { Dayjs } from 'dayjs';
+import Switch, { SwitchProps } from '@mui/material/Switch';
+import { styled } from '@mui/material/styles';
+import Grid from '@mui/material/Grid';
+import Slider from '@mui/material/Slider';
+import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
 
-import Checkbox from '@mui/material/Checkbox';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import { useNavigate } from 'react-router-dom';
-import dayjs, { Dayjs } from 'dayjs';
-import Stack from '@mui/material/Stack';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
 
-const Input = styled(MuiInput)`
-  width: 42px;
-`;
-
-
-// <MDEditor.Markdown source={value} style={{ whiteSpace: 'pre-wrap' }} />
-
-
-
-export default function NewItem() {
-  const [alertContent, setAlertContent] = useState('');
+const EditItem = (props) => {
   const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
-  const collectionIndex = JSON.parse( localStorage.getItem("CollectionIndex") as string );
-  const [addedFields,setAddedFields] = useState('');
-  const [markDownValueDescription,setMarkDownValueDescription] = useState('' as string | undefined);
+  const currentUser = useSelector((state:MyState)=>state.app.currentUser.email);
+  useEffect(() => {
+    setName(props.data?props.data.item.itemName:'')
+    setMarkDownValueDescription(props.data?props.data.item.description:'')
+    setMarkDownValueComments(props.data?props.data.item.comments:'')
+    setMarkDownValueNotes(props.data?props.data.item.notes:'')
+    setId(props.data?props.data.item.id:'')
+    setMadeIn(props.data?props.data.item.madeIn:'')
+    setDamage(props.data?props.data.item.damage:'')
+    setCondition(props.data?props.data.item.condition:'')
+    setValueAmount(props.data?props.data.item.amount:'')
+    setValueSail(props.data?props.data.item.readyToSail:'')
+    setValueCost(props.data?props.data.item.cost:'')
+    setForSale(props.data?props.data.item.forSale:'')
+    setForeign(props.data?props.data.item.foreign:'')
+    setStock(props.data?props.data.item.inStock:'')
+    setValueBought(props.data?props.data.item.bought:'')
+    setValueRegistration(props.data?props.data.item.firstRegistration:'')
+    setValueCreated(props.data?props.data.item.created:'')
+  },[props]);
+
+  const [markDownValueDescription,setMarkDownValueDescription] = useState('');
   const [markDownValueComments,setMarkDownValueComments] = useState('' as string | undefined);
   const [markDownValueNotes,setMarkDownValueNotes] = useState('' as string | undefined);
   const [id, setId] = useState('');
@@ -83,38 +84,7 @@ export default function NewItem() {
   const [valueCreated, setValueCreated] = useState<Dayjs | null>(
     dayjs(Date.now()),
   );
-  const [fieldsLocation,setFieldsLocation] = useState([]);
 
-
- 
-
-  const currentUser = useSelector((state:MyState)=>state.app.currentUser);
-
-  const getCollection = async(email:string)=>{
-    try{
-        await axios.post("http://localhost:5000/api/auth/collections",{
-          email
-        }).then(res => {
-          setFieldsLocation(res.data.collection.collections[collectionIndex].fieldsLocation
-            );
-          setAddedFields(res.data.collection.collections[collectionIndex].addedFields
-            )
-            
-    
-        })
-       
-    } catch(e){
-      if (axios.isAxiosError(e))  {
-        console.log(e.response?.data.message );
-      } 
-    }
-   
-  }
-  
-  useEffect(() => {
-    getCollection(currentUser.email)
-  },[]);
-  
   const ChangeId = (event: ChangeEvent<HTMLInputElement>) => {
     setId(event.target.value);
   };
@@ -243,15 +213,27 @@ export default function NewItem() {
         setValueRegistration(newValue);
       };
 
-      const createItem = async( email: string,
-         collectionName: string, itemName: string,
-         id: string,madeIn:string, condition: string,damage: string,
-         comments: string,description: string, notes: string,
-         forSale: Boolean,foreign: Boolean,inStock: Boolean,
-         created: Date,bought: Date,firstRegistration: Date,amount: Number,
-         readyToSail: Number,cost: Number,addedFields:string[],fieldsLocation:string[])=>{
+
+
+
+const [open, setOpen] = useState(false);
+    const handleClickOpen = () => {
+        setOpen(true);
+      };
+    
+      const handleClose = () => {
+        setOpen(false);
+      };
+    
+      const editItem = async( email: string,
+        collectionName: string, itemName: string,
+        id: string,madeIn:string, condition: string,damage: string,
+        comments: string,description: string, notes: string,
+        forSale: Boolean,foreign: Boolean,inStock: Boolean,
+        created: Date,bought: Date,firstRegistration: Date,amount: Number,
+        readyToSail: Number,cost: Number,originalId:string)=>{
         try{
-            const response = await axios.post("http://localhost:5000/api/auth/createitem",{
+             await axios.post("http://localhost:5000/api/auth/edititem",{
               email,
               collectionName,
               itemName,
@@ -271,51 +253,34 @@ export default function NewItem() {
               amount,
               readyToSail,
               cost,
-              addedFields,
-              fieldsLocation,
+              originalId
             })
-            setAlertContent(response.data.message);
+            
         } catch(e){
           if (axios.isAxiosError(e))  {
-            setAlertContent(e.response?.data.message );
+            alert(e.response?.data.message );
           } 
         }
        
       }
-    
-      const SendData = ()=>{
-        createItem(currentUser.email,
-          collectionName,
-          name,
-          id,
-          madeIn,
-          condition,
-          damage,
-          markDownValueComments,
-          markDownValueDescription,
-          markDownValueNotes,
-          forSale,
-          foreign,
-          stock,
-          valueCreated,
-          valueBought,
-          valueRegistration,
-          valueAmount,
-          valueSail,
-          valueCost,
-          addedFields,
-          fieldsLocation
-          )
+      return(
+        <div>
+        
+      <Button  onClick={()=>handleClickOpen()} startIcon={<EditOutlinedIcon />}>
 
-      }
-  
-
-  return (
-    <Card  className= {s.box}>
+      </Button>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Edit Item"}
+        </DialogTitle>
+        <DialogContent>
+        <Card  className= {s.box}>
     <CardContent>
-      <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       New Item '{collectionName}'
-      </Typography>
       <Box
       component="form"
       sx={{
@@ -338,46 +303,46 @@ export default function NewItem() {
       value={name}
       onChange={ChangeName}
      />
-      {addedFields.includes('Made In')? <TextField 
+      {props.data?props.data.fieldsLocation[0]? <TextField 
       id="outlined-basic" 
       label="Made In" 
       variant="outlined"
       value={madeIn}
       onChange={ChangeMadeIn}
-     /> : <></> }
-     {addedFields.includes('Description')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+     /> : <></>:'' }
+     {props.data?props.data.fieldsLocation[1]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
          Description
           </Typography>
           <MDEditor
               value={markDownValueDescription}
-              onChange={setMarkDownValueDescription} /></> : <></> }
-     {addedFields.includes('Comments')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+              onChange={setMarkDownValueDescription} /></> : <></>:''  }
+     {props.data?props.data.fieldsLocation[2]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           Comments
           </Typography><MDEditor
               value={markDownValueComments}
-              onChange={setMarkDownValueComments} /></> : <></> }
-     {addedFields.includes('Damage')? <TextField 
+              onChange={setMarkDownValueComments} /></> : <></>:'' }
+     {props.data?props.data.fieldsLocation[3]? <TextField 
       id="outlined-basic" 
       label="Damage" 
       variant="outlined"
       value={damage}
       onChange={ChangeDamage}
-     /> : <></> }
-     {addedFields.includes('Condition')? <TextField 
+     /> : <></>:'' }
+     {props.data?props.data.fieldsLocation[4]? <TextField 
       id="outlined-basic" 
       label="Condition" 
       variant="outlined"
       value={condition}
       onChange={ChangeCondition}
-     /> : <></> }
-     {addedFields.includes('Notes')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+     /> : <></>:''  }
+     {props.data?props.data.fieldsLocation[5]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             Notes
           </Typography><MDEditor
               value={markDownValueNotes}
-              onChange={setMarkDownValueNotes} /></> : <></> }
+              onChange={setMarkDownValueNotes} /></> : <></>:'' }
               
       </Box>
-      {addedFields.includes('Amount')? <Box sx={{ width: 250 }}>
+      {props.data?props.data.fieldsLocation[12]? <Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
         Amount
       </Typography>
@@ -407,8 +372,8 @@ export default function NewItem() {
           />
         </Grid>
       </Grid>
-    </Box>: <></> }
-    {addedFields.includes('Ready To Sail')? <Box sx={{ width: 250 }}>
+    </Box>: <></>:''  }
+    {props.data?props.data.fieldsLocation[13]? <Box sx={{ width: 250 }}>
    <Typography id="input-slider" gutterBottom>
         Ready to Sail($x100)
       </Typography>
@@ -438,8 +403,8 @@ export default function NewItem() {
           />
         </Grid>
       </Grid>
-    </Box> : <></> }
-    {addedFields.includes('Cost')?<Box sx={{ width: 250 }}>
+    </Box> : <></>:'' }
+    {props.data?props.data.fieldsLocation[14]?<Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
         Cost ($x100)
       </Typography>
@@ -469,30 +434,30 @@ export default function NewItem() {
           />
         </Grid>
       </Grid>
-    </Box>: <></> }
-    {addedFields.includes('For Sale')? <Box>
+    </Box>: <></>:'' }
+    {props.data?props.data.fieldsLocation[6]? <Box>
     <FormControlLabel
         control={<Android12Switch checked={forSale} />}
         label="For Sale"
         onChange={e =>checkForSale(e)}
       />
-    </Box>: <></> }
-    {addedFields.includes('Foreign')?<Box>
+    </Box>: <></>:'' }
+    {props.data?props.data.fieldsLocation[7]?<Box>
     <FormControlLabel
         control={<Android12Switch checked={foreign} />}
         label="Foreign"
         onChange={e =>checkForeign(e)}
       />
-    </Box>: <></> }
-    {addedFields.includes('In Stock')? <Box>
+    </Box>: <></>:'' }
+    {props.data?props.data.fieldsLocation[8]? <Box>
     <FormControlLabel
         control={<Android12Switch checked={stock} />}
         label="In Stock"
         onChange={e =>checkStock(e)}
       />
-    </Box>: <></> }
+    </Box>: <></>:'' }
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-    {addedFields.includes('Created')? <Box mt={2}>
+    {props.data?props.data.fieldsLocation[9]? <Box mt={2}>
       <MobileDatePicker
           label="Created"
           inputFormat="MM/DD/YYYY"
@@ -500,9 +465,9 @@ export default function NewItem() {
           onChange={handleChangeCreated}
           renderInput={(params) => <TextField {...params} />}
         />
-      </Box>:<></> }
+      </Box>:<></>:'' }
 
-      {addedFields.includes('Bought')?<Box mt={2}>
+      {props.data?props.data.fieldsLocation[10]?<Box mt={2}>
         <MobileDatePicker
           label="Bought"
           inputFormat="MM/DD/YYYY"
@@ -510,8 +475,8 @@ export default function NewItem() {
           onChange={handleChangeBought}
           renderInput={(params) => <TextField {...params} />}
         />
-        </Box>:<></> }
-        {addedFields.includes('First Registration')? <Box mt={2}>
+        </Box>:<></>:'' }
+        {props.data?props.data.fieldsLocation[11]? <Box mt={2}>
         <MobileDatePicker
           label="First Registration"
           inputFormat="MM/DD/YYYY"
@@ -519,7 +484,7 @@ export default function NewItem() {
           onChange={handleChangeRegistration}
           renderInput={(params) => <TextField {...params} />}
         />
-        </Box>:<></> }
+        </Box>:<></>:'' }
    
        
         
@@ -535,19 +500,51 @@ export default function NewItem() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
-              onClick={SendData}
+              onClick={()=> 
+               { editItem(currentUser,
+                  collectionName,
+                  name,
+                  id,
+                  madeIn,
+                  condition,
+                  damage,
+                  markDownValueComments,
+                  markDownValueDescription,
+                  markDownValueNotes,
+                  forSale,
+                  foreign,
+                  stock,
+                  valueCreated,
+                  valueBought,
+                  valueRegistration,
+                  valueAmount,
+                  valueSail,
+                  valueCost,
+                  props.data.item.id
+                  )
+                  localStorage.setItem("ItemId", JSON.stringify(id));
+                }
+                }
             >
-              Create
+              Edit
           </Button>
-          {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
+          <Button onClick={()=>{
+            handleClose();
+            props.getCurrentItem(currentUser,collectionName,id);
+            }} autoFocus>
+          Close
+          </Button>
+        
      
     </CardContent>
 
   </Card>
-
-  );
-}
-
-
-
- 
+        </DialogContent>
+        <DialogActions>
+        
+        </DialogActions>
+      </Dialog>
+    </div>
+      )
+  };
+  export default EditItem;

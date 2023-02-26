@@ -1,36 +1,11 @@
-
-
-.button{
-    cursor: pointer;
-    text-decoration: none;
-    margin: 20px;
-    color: white;
+.box{
+    position: relative;
+    width: 500px;
+    margin: 0 auto;
+    top:50px;
 }
 
-.elements{
+.dragBox{
     display: flex;
-    flex-direction: row;
-    
 }
-.text{
-    font-size: 20px;
-   }
-   
-.textLink{
-    text-decoration: none;
-    color: currentColor;
-   }
-.editBar{
-    display: flex;
-    justify-content: space-between;
-    z-index: 8;
-    width: 100px;
-   }
-@media(max-width: 768px){
-    .text{
-        
-     font-size: 13px;
-    }
-    }
-
 

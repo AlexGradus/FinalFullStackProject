@@ -52,7 +52,7 @@ export default function ItemActions({params,getItems}) {
        
       }
   
-console.log(params);
+
  
 return (
    <Box>
