@@ -5,26 +5,25 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { useDispatch, useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
 import { NavLink } from 'react-router-dom';
-import { logout, setDarkMode } from '../../store/appReducer';
+import { logout, setAdminData, setDarkMode, setUsedByAdmin, setUser } from '../../store/appReducer';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const auth = useSelector((state:MyState)=>state.app.isAuth);
+  const admin = useSelector((state:MyState)=>state.app.usedByAdmin);
+  const currentUser = useSelector((state:MyState)=>state.app);
   const navigate = useNavigate();
-
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -38,13 +37,34 @@ export default function Header() {
     navigate("/myaccount");
   }
   const ChangeToAdminPage = ()=>{
+    
     setAnchorEl(null);
-    navigate("/adminpage");
+    currentUser.currentUser.admin==='Admin'?navigate("/adminpage"):alert("you are not admin!")
   }
   const dispatch = useDispatch();
   const darkMode = useSelector((state:MyState)=>state.app.currentMode);
+  const login = (email:string, password:string, name:string)=>{
+    return async (dispatch: (arg0: { type: string }) => void) =>{
+        try{
+            const response = await axios.post("http://localhost:5000/api/auth/login",{
+                email,
+                password,
+                name 
+            })
+            dispatch(setUser(response.data.user))
+            localStorage.setItem("token",response.data.token)
+        } catch(e){
+          if (axios.isAxiosError(e))  {
+            console.log(e.response?.data.message );
+          } 
+        }
 
-  return (
+    }
+  
+   
+}
+
+ return (
     <Box sx={{ flexGrow: 1 }}>
      
       <AppBar position="static">
@@ -54,16 +74,30 @@ export default function Header() {
             Dark:
           </Typography>
           <Switch
-              checked={darkMode}
-              onChange={()=>dispatch(setDarkMode(!darkMode))}
+              checked={darkMode as unknown as boolean | undefined}
+              onChange={()=>{
+                dispatch(setDarkMode(!darkMode))
+                localStorage.setItem("darkMode", JSON.stringify(!darkMode))
+              }}
               inputProps={{ 'aria-label': 'controlled' }}
           />
           </Box>
         {!auth&&<div><NavLink className={s.button} to ="/login">Sign in</NavLink></div>}
         {!auth&& <div ><NavLink className={s.button} to ="/registration">Sign up</NavLink></div>}
-       
-        {auth&&<Typography className={s.button} onClick={()=>dispatch(logout())} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+
+        {auth&&<Typography className={s.button} onClick={()=>{
+          dispatch(setUsedByAdmin(false))
+          dispatch(setAdminData({email:'',password:'',name:''}))
+          dispatch(logout())}} variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Log Out
+          </Typography>}
+       
+        {admin&&<Typography className={s.button} onClick={()=>{
+          (dispatch as any)(login(currentUser.adminData.email,currentUser.adminData.password,currentUser.adminData.name))
+          dispatch(setUsedByAdmin(false))
+          dispatch(setAdminData({email:'',password:'',name:''}))
+        }} variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Return to Your Acc
           </Typography>}
           {auth && (
             <div>

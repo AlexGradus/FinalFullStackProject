@@ -1,7 +1,7 @@
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { green, purple } from '@mui/material/colors';
-import { useEffect, useState } from 'react';
+
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Authorization } from './action/user';
@@ -18,6 +18,7 @@ import ItemPage from './pages/ItemPage';
 import NewItem from './components/NewItem';
 import CurrentItem from './pages/CurrentItemPage';
 import AdminPage from './pages/AdminPage';
+import CurrentItemforAll from './pages/CurrentItemPageForAll';
 
 function App() {
   const darkMode = useSelector((state:MyState)=>state.app.currentMode);
@@ -43,15 +44,18 @@ function App() {
          <Route path='/' element={<WelcomePage/>}/>
          <Route path='/login' element={<SignIn/>}/>
          <Route path='/registration' element={<SignUp/>}/>
+         <Route path='/collection/items/item' element={<CurrentItemforAll/>}/>
      </Routes>}
      {Auth&&
      <Routes>
+           <Route path='/' element={<WelcomePage/>}/>
            <Route path='/adminpage' element={<AdminPage/>}/>
            <Route path='/myaccount' element={<MyAccountPage/>}/>
            <Route path='/myaccount/newcollection' element={<NewCollection/>}/>
            <Route path='/myaccount/items' element={<ItemPage/>}/>
            <Route path='/myaccount/items/item' element={<CurrentItem/>}/>
            <Route path='/myaccount/items/newitem' element={<NewItem/>}/>
+           <Route path='/collection/items/item' element={<CurrentItemforAll/>}/>
            
            
      </Routes>}

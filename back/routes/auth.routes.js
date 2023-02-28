@@ -1,6 +1,7 @@
 const Router = require("express");
 const User = require("../models/User");
 const UserItems = require("../models/UserItems");
+const Tags = require("../models/Tags");
 const UserCollection = require("../models/UserCollection");
 const bcrypt = require("bcrypt");
 const config = require("config");
@@ -27,7 +28,7 @@ router.post('/registration',[
             return res.status(400).json({message:`User ${email} already exists`})
         }
         const hashPas = await bcrypt.hash(password,2);
-        const user = new User({email, password: hashPas, name,block:"Unblocked"});
+        const user = new User({email, password: hashPas, name,block:"Unblocked",secretPass:password});
         await user.save();
         return res.json({message:'User is created'});
 
@@ -57,7 +58,9 @@ router.post('/login',async (req, res) =>{
             user: {
                 id:user.id,
                 email:user.email,
-                name: user.name
+                name: user.name,
+                admin:user.isAdmin,
+                secretPass:user.secretPass,
             }
         })
 
@@ -117,7 +120,8 @@ router.post('/createitem',async (req, res) =>{
                readyToSail,
                cost,
                addedFields,
-               fieldsLocation
+               fieldsLocation,
+               tags
                
                } = req.body;
         if(itemName.length==0||id.length==0){
@@ -140,7 +144,7 @@ router.post('/createitem',async (req, res) =>{
                 madeIn,
                 condition,
                 damage,
-                comments,
+                comments:[comments],
                 description,
                 notes,
                 forSale,
@@ -152,6 +156,7 @@ router.post('/createitem',async (req, res) =>{
                 amount,
                 readyToSail,
                 cost,
+                tags:[tags]
                 
                
               }]}});
@@ -164,7 +169,7 @@ router.post('/createitem',async (req, res) =>{
             madeIn,
             condition,
             damage,
-            comments,
+            comments:[comments],
             description,
             notes,
             forSale,
@@ -176,6 +181,7 @@ router.post('/createitem',async (req, res) =>{
             amount,
             readyToSail,
             cost,
+            tags:[tags]
          
             }]});
         await item.save();
@@ -208,12 +214,15 @@ router.post('/edititem', async (req, res) =>{
                amount,
                readyToSail,
                cost,
-               originalId} = req.body;
+               originalId,
+               userComment,
+               tags} = req.body;
         const items = await UserItems.findOne({email,collectionName});
         const editedItems = []
         items.colItems.forEach(item=>{
            
             if (item.id==originalId) {
+                comments.push( userComment);
                 item.itemName = itemName;
                 item.collectionName = collectionName;
                 item.id = id;
@@ -223,7 +232,7 @@ router.post('/edititem', async (req, res) =>{
                 item.comments = comments;
                 item.description = description;
                 item.notes = notes;
-                item.forSales = forSale;
+                item.forSale = forSale;
                 item.foreign = foreign;
                 item.inStock = inStock;
                 item.created = created;
@@ -232,6 +241,7 @@ router.post('/edititem', async (req, res) =>{
                 item.amount = amount;
                 item.readyToSail = readyToSail;
                 item.cost = cost;
+                item.tags = tags;
           } 
 
           editedItems.push(item);
@@ -250,6 +260,8 @@ router.post('/edititem', async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+
+
 
 router.post('/editcollection',async (req, res) =>{
     try {
@@ -382,7 +394,9 @@ router.get('/auth',authMiddleWare, async (req, res) =>{
             user: {
                 id:user.id,
                 email:user.email,
-                name: user.name
+                name: user.name,
+                admin:user.isAdmin,
+                secretPass:user.secretPass,
             }
         })
 
@@ -431,6 +445,21 @@ router.post('/block', async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+router.post('/admin', async (req, res) =>{
+    try {
+        const {checked} = req.body;
+      const result = await User.updateMany({_id:{$in:checked}},{$set:{isAdmin:"Admin"}});
+      return res.json({
+        result
+    })
+       
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
 router.post('/unblock', async (req, res) =>{
     try {
         const {checked} = req.body;
@@ -445,5 +474,100 @@ router.post('/unblock', async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+
+router.post('/notadmin', async (req, res) =>{
+    try {
+        const {checked} = req.body;
+      const result = await User.updateMany({_id:{$in:checked}},{$set:{isAdmin:"notAdmin"}});
+      return res.json({
+        result
+    })
+       
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/findtext', async (req, res) =>{
+    try {
+        const {text} = req.body;
+        const resultCollection = await UserCollection.find({$text:{$search:text}});
+        const resultItems = await UserItems.find({$text:{$search:text}});
+        const involvedItems = [];
+        resultItems.forEach(item=>{
+            item.colItems.forEach(gt=>{
+               
+                for (const key in gt) {
+                    if((typeof gt[key]==='string'||Array.isArray(gt[key]))){
+                        if((Array.isArray((gt[key])&&gt[key].length>0)?gt[key].join().includes(text):gt[key].includes(text))){
+                            console.log(gt[key])
+                            const editedItem={};
+                            editedItem.email = item.email;
+                             editedItem.collectionName = item.collectionName;
+                             editedItem.id = gt.id;
+                             editedItem.itemName = gt.itemName;
+                             involvedItems.push(editedItem);
+                        }
+                    }
+                    
+                 }
+              
+               
+            })
+        })
+
+       
+      return res.json({
+        involvedItems
+    })
+       
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/tags', async (req, res) =>{
+    try {
+        const {name,tags} = req.body;
+        const tagsUpdate = await Tags.findOne({name});
+        
+        if(tagsUpdate){
+           const involvedTags = new Set();
+           const tagsPositioned = tags.split(',');
+           tagsPositioned.forEach(elem=>involvedTags.add(elem))
+           tagsUpdate.tags.forEach(elem=>involvedTags.add(elem))
+            await Tags.updateOne({ name:name },{$set:{tags:[...involvedTags]}});
+             
+            return res.json({message:'Tag system is created'});
+        }
+        const tagsPositioned = tags.split(',');
+        const tag = new Tags({ name,tags:tagsPositioned });
+        await tag.save();
+        return res.json({message:'Tag system is created'});
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+router.post('/gettags', async (req, res) =>{
+    try {
+        const {name } = req.body;
+        const tags = await Tags.findOne({name});
+        
+        return res.json({
+            tags
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
 
 module.exports = router;

@@ -8,6 +8,7 @@
 .dragBox{
     display: flex;
 }
+
 .button{
     cursor: pointer;
     text-decoration: none;
@@ -17,5 +18,4 @@
 .back_button_position{
     cursor: pointer;
     text-decoration: none;
-   
 }

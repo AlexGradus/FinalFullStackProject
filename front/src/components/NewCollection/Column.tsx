@@ -1,7 +1,7 @@
 
 import styled from 'styled-components';
 import Images from './Images';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import {  Droppable } from 'react-beautiful-dnd';
 const Container = styled.div`
     margin:8px;
     width:200px;
@@ -18,7 +18,7 @@ const ImageList = styled.div`
 `;
 
 
-export default function Column(props) {
+export default function Column(props:any) {
     
 
   
@@ -33,7 +33,7 @@ export default function Column(props) {
                   ref = {provided.innerRef}
                   {...provided.droppableProps}
                   >
-                  {props.imagesRow.map((image, index)=><Images key={image.id} image={image} index = {index}/>)}
+                  {props.imagesRow.map((image:any, index:number)=><Images key={image.id} image={image} index = {index}/>)}
                   {provided.placeholder}
               </ImageList>
                 )}

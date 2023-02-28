@@ -13,7 +13,7 @@ export const registration = async(email:string, password:string, name:string)=>{
       alert(response.data.message);
     } catch(e){
       if (axios.isAxiosError(e))  {
-        alert(e.response?.data.message );
+        console.log(e.response?.data.message );
       } 
     
         
@@ -23,7 +23,7 @@ export const registration = async(email:string, password:string, name:string)=>{
 }
 
 export const login = (email:string, password:string, name:string)=>{
-    return async (dispatch: (arg0: { type: string; payload: any; }) => void) =>{
+    return async (dispatch: (arg0: { type: string }) => void) =>{
         try{
             const response = await axios.post("http://localhost:5000/api/auth/login",{
                 email,
@@ -44,7 +44,7 @@ export const login = (email:string, password:string, name:string)=>{
 }
 
 export const Authorization = ()=>{
-    return async (dispatch: (arg0: { type: string; payload: any; }) => void) =>{
+    return async (dispatch: (arg0: { type: string }) => void) =>{
         try{
             const response = await axios.get("http://localhost:5000/api/auth/auth",{
                 headers:{Authorization:`Bearer ${localStorage.getItem('token')}`}

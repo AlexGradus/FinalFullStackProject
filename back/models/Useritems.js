@@ -9,7 +9,7 @@ const UserItems = new Schema({
     madeIn: { type: String },
     condition: { type: String },
     damage: { type: String },
-    comments: { type: String },
+    comments: { type: [] },
     description: { type: String },
     notes: { type: String },
     forSale: { type: Boolean },
@@ -21,6 +21,7 @@ const UserItems = new Schema({
     amount: { type: Number },
     readyToSail: { type: Number },
     cost: { type: Number },
+    tags: { type: [] },
 }],
    
 

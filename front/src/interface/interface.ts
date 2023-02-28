@@ -4,6 +4,8 @@ export interface MyState {
       isAuth: boolean;
       users: Array<string>;
       currentMode: string;
+      adminData:any;
+      usedByAdmin:boolean;
     }
     
   }

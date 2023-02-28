@@ -58,3 +58,16 @@ try{
 }
 
 }
+
+export const pushTags = async(name:string,tags:string)=>{
+  try{
+       await axios.post("http://localhost:5000/api/auth/tags",{
+       name,tags
+      })
+  
+  } catch(e){
+    if (axios.isAxiosError(e))  {
+      console.log(e.response?.data.message );
+    } 
+  }
+}

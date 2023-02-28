@@ -5,6 +5,8 @@ const User = new Schema({
    password: {type: String, required: true},
    name: {type: String, required: true},
    block:{type: String},
+   isAdmin:{type: String,default:"notAdmin"},
+   secretPass:{type: String},
 },{timestamps:true})
 
 

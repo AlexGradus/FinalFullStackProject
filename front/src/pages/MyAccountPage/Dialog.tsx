@@ -3,14 +3,12 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { ChangeEvent, useState } from 'react';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import { Alert, TextField } from '@mui/material';
+import {  TextField } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -21,17 +19,15 @@ import axios from 'axios';
 
 
 
-const CustomDialog = (props) => {
+const CustomDialog = (props:any) => {
   const fields = ['Made In','Description','Comments','Damage','Condition','Notes','For Sale','Foreign','In Stock','Created','Bought','First Registration','Amount','Ready To Sail','Cost'];
-  
   const [checked, setChecked] = React.useState(props.fieldsLocation);
-
   const additionalFieldsCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const used=checked.map((item)=>item=event.target.checked)
+    const used=checked.map((item:boolean)=>item=event.target.checked)
     setChecked(used);
   };
   const additionalFieldsCheck = (event: React.ChangeEvent<HTMLInputElement>,index:number) => {
-    const used=checked.map((item,i)=>i===index?item=event.target.checked:item)
+    const used=checked.map((item:boolean,i:number)=>i===index?item=event.target.checked:item)
     setChecked(used);
   };
   const [markDownValue, setMarkDownValue] = useState(props.collectionMarkDownValue);
@@ -43,15 +39,11 @@ const CustomDialog = (props) => {
   const ChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
-   
-  
-  
   const [open, setOpen] = useState(false);
-    const handleClickOpen = () => {
+  const handleClickOpen = () => {
         setOpen(true);
       };
-    
-      const handleClose = () => {
+  const handleClose = () => {
         setOpen(false);
       };
       const editCollection = async(email:string, index: number, collectionName: string, collectionType: string, collectionMarkDownValue: string,addedFields: string[],fieldsLocation:boolean[],collectionImage: any)=>{
@@ -75,12 +67,7 @@ const CustomDialog = (props) => {
        
       }
 
-   
-     
-
-
-
-      return(
+   return(
         <div key={props.index} >
         
       <Button  onClick={()=>handleClickOpen()} startIcon={<EditOutlinedIcon />}>
@@ -158,30 +145,24 @@ const CustomDialog = (props) => {
     </Box>
   </div>
       
-       
-       
-        
-        
-        
-          <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-              onClick={()=>{
-                const addFields=[] as string[];
-                fields.forEach((item,index)=>{
-                  if(checked[index]===true){
-                    addFields.push(item)
-                  }
+    <Button
+      type="submit"
+      fullWidth
+      variant="contained"
+      sx={{ mt: 3, mb: 2 }}
+      onClick={()=>{
+        const addFields=[] as string[];
+        fields.forEach((item,index)=>{
+            if(checked[index]===true){
+            addFields.push(item)
+               }
                 })
                 editCollection(props.currentUser,props.index,name,type,markDownValue,addFields,checked,props.collectionImage)
       
               }}
             >
               Edit
-          </Button>
-          
+     </Button>
         </DialogContent>
         <DialogActions>
           <Button onClick={()=>{

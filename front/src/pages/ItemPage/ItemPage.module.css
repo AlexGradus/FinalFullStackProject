@@ -1,10 +1,14 @@
 
 
-.button{
+ .button{
     cursor: pointer;
     text-decoration: none;
     margin: 20px;
-    color: white;
+    color: black;
+}
+.back_button_position{
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .elements{

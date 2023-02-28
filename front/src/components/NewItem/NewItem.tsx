@@ -2,54 +2,34 @@ import * as React from 'react';
 import { s } from '.';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { Alert, TextField } from '@mui/material';
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Container } from '@mui/system';
+import { Alert, Autocomplete, TextField } from '@mui/material';
+import { ChangeEvent, useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 import { styled } from '@mui/material/styles';
 import Slider from '@mui/material/Slider';
 import MuiInput from '@mui/material/Input';
-import VolumeUp from '@mui/icons-material/VolumeUp';
 import Grid from '@mui/material/Grid';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
-
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { useNavigate } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
-import Stack from '@mui/material/Stack';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
-
-
-
+import { pushTags } from '../../api/api';
+import { NavLink } from 'react-router-dom';
 const Input = styled(MuiInput)`
   width: 42px;
 `;
 
-
-// <MDEditor.Markdown source={value} style={{ whiteSpace: 'pre-wrap' }} />
-
-
-
 export default function NewItem() {
+  
+  const [tagsForAutocomplete, setTagsForAutocomplete] = useState([]);
   const [alertContent, setAlertContent] = useState('');
   const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
   const collectionIndex = JSON.parse( localStorage.getItem("CollectionIndex") as string );
@@ -59,6 +39,7 @@ export default function NewItem() {
   const [markDownValueNotes,setMarkDownValueNotes] = useState('' as string | undefined);
   const [id, setId] = useState('');
   const [name, setName] = useState(''); 
+  const [tags, setTags] = useState(''); 
   const [madeIn, setMadeIn] = useState(''); 
   const [damage, setDamage] = useState(''); 
   const [condition, setCondition] = useState(''); 
@@ -84,11 +65,21 @@ export default function NewItem() {
     dayjs(Date.now()),
   );
   const [fieldsLocation,setFieldsLocation] = useState([]);
-
-
- 
-
   const currentUser = useSelector((state:MyState)=>state.app.currentUser);
+  const getTags = async(name:string)=>{
+    try{
+      await axios.post("http://localhost:5000/api/auth/gettags",{
+          name
+        }).then(res => {
+          setTagsForAutocomplete(res.data.tags.tags)
+        })
+        
+    } catch(e){
+      if (axios.isAxiosError(e))  {
+        console.log(e.response?.data.message );
+      } 
+    }
+   }
 
   const getCollection = async(email:string)=>{
     try{
@@ -114,12 +105,18 @@ export default function NewItem() {
   useEffect(() => {
     getCollection(currentUser.email)
   },[]);
+  useEffect(() => {
+  getTags('282')
+  },[tags]);
   
   const ChangeId = (event: ChangeEvent<HTMLInputElement>) => {
     setId(event.target.value);
   };
   const ChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
+  };
+  const ChangeTags = (event: ChangeEvent<HTMLInputElement>) => {
+    setTags(event.target.value);
   };
   const ChangeMadeIn = (event: ChangeEvent<HTMLInputElement>) => {
     setMadeIn(event.target.value);
@@ -130,13 +127,9 @@ export default function NewItem() {
   const ChangeCondition = (event: ChangeEvent<HTMLInputElement>) => {
     setCondition(event.target.value);
   };
-
-
-
   const handleSliderChangeAmount = (event: Event, newValue: number | number[]) => {
     setValueAmount(newValue);
   };
-
   const handleInputChangeAmount = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValueAmount(event.target.value === '' ? '' : Number(event.target.value));
   };
@@ -148,13 +141,10 @@ export default function NewItem() {
       setValueAmount(100);
     }}
 
-
-  
-    const handleSliderChangeSail = (event: Event, newValue: number | number[]) => {
+  const handleSliderChangeSail = (event: Event, newValue: number | number[]) => {
       setValueSail(newValue);
     };
-  
-    const handleInputChangeSail = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChangeSail = (event: React.ChangeEvent<HTMLInputElement>) => {
       setValueSail(event.target.value === '' ? '' : Number(event.target.value));
     };
   
@@ -213,32 +203,25 @@ export default function NewItem() {
         },
       }));
 
-      const checkForSale = (event: SyntheticEvent<Element, Event>) => {
+      const checkForSale = (event: any) => {
        
         setForSale(event.target.checked);
       };
-      const checkForeign = (event: SyntheticEvent<Element, Event>) => {
+      const checkForeign = (event:  any) => {
        
         setForeign(event.target.checked);
       };
      
-      const checkStock = (event: SyntheticEvent<Element, Event>) => {
+      const checkStock = (event:  any) => {
        
         setStock(event.target.checked);
       };
-
-     
-    
       const handleChangeCreated = (newValue: Dayjs | null) => {
         setValueCreated(newValue);
       };
-   
-    
       const handleChangeBought = (newValue: Dayjs | null) => {
         setValueBought(newValue);
       };
-      
-    
       const handleChangeRegistration = (newValue: Dayjs | null) => {
         setValueRegistration(newValue);
       };
@@ -246,10 +229,10 @@ export default function NewItem() {
       const createItem = async( email: string,
          collectionName: string, itemName: string,
          id: string,madeIn:string, condition: string,damage: string,
-         comments: string,description: string, notes: string,
+         comments: string | undefined,description: string | undefined, notes: string | undefined,
          forSale: Boolean,foreign: Boolean,inStock: Boolean,
-         created: Date,bought: Date,firstRegistration: Date,amount: Number,
-         readyToSail: Number,cost: Number,addedFields:string[],fieldsLocation:string[])=>{
+         created: Dayjs | null,bought: Dayjs | null,firstRegistration: Dayjs | null,amount:string | number | (string | number)[],
+         readyToSail: string | number | (string | number)[],cost: string | number | (string | number)[],addedFields:string,fieldsLocation:string[],tags:string)=>{
         try{
             const response = await axios.post("http://localhost:5000/api/auth/createitem",{
               email,
@@ -273,6 +256,7 @@ export default function NewItem() {
               cost,
               addedFields,
               fieldsLocation,
+              tags,
             })
             setAlertContent(response.data.message);
         } catch(e){
@@ -304,8 +288,10 @@ export default function NewItem() {
           valueSail,
           valueCost,
           addedFields,
-          fieldsLocation
-          )
+          fieldsLocation,
+          tags
+          );
+          pushTags('282',tags)
 
       }
   
@@ -313,6 +299,7 @@ export default function NewItem() {
   return (
     <Card  className= {s.box}>
     <CardContent>
+    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/items/"><Button variant="outlined">BACK</Button></NavLink></div>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
        New Item '{collectionName}'
       </Typography>
@@ -338,6 +325,17 @@ export default function NewItem() {
       value={name}
       onChange={ChangeName}
      />
+      
+      <Autocomplete
+        id="free-solo-demo"
+        freeSolo
+        options={tagsForAutocomplete.map((option) => option)}
+        onChange={(event, newValue) => {
+          setTags(newValue as string);
+        }}
+        
+        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label="Tags(via ',')"  />}
+      />
       {addedFields.includes('Made In')? <TextField 
       id="outlined-basic" 
       label="Made In" 
@@ -520,17 +518,8 @@ export default function NewItem() {
           renderInput={(params) => <TextField {...params} />}
         />
         </Box>:<></> }
-   
-       
-        
     </LocalizationProvider>
-   
-
-    
-    
-     
-
-    <Button
+          <Button
               type="submit"
               fullWidth
               variant="contained"

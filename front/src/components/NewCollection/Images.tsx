@@ -9,7 +9,7 @@ const Container = styled.div`
 
 
 
-export default function Images(props) {
+export default function Images(props:any) {
     
   
   

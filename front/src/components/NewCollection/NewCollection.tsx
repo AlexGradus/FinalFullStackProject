@@ -2,38 +2,29 @@ import * as React from 'react';
 import { s } from '.';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Alert, TextField } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Container } from '@mui/system';
 import MDEditor from '@uiw/react-md-editor';
-import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import  ImagesForChoiseFull  from './data'
 import Column from './Column';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
-
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
-
-// <MDEditor.Markdown source={value} style={{ whiteSpace: 'pre-wrap' }} />
-
-
+import { NavLink } from 'react-router-dom';
 
 export default function NewCollection() {
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
   const [alertContent, setAlertContent] = useState('');
-  
   const [markDownValue, setMarkDownValue] = useState('' as string | undefined);
   const [ImagesForChoise,setImagesForChoise] = useState(ImagesForChoiseFull);
   const [type, setType] = useState('');
@@ -44,8 +35,6 @@ export default function NewCollection() {
   const ChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
   };
-
- 
   const onDragEnd =(result: DropResult) =>{
     const { destination, source, draggableId } = result;
     
@@ -59,11 +48,8 @@ export default function NewCollection() {
       ){
       return;
     }
-
-   
-
-    const start = ImagesForChoise.columns[source.droppableId];
-    const finish = ImagesForChoise.columns[destination.droppableId];
+    const start = (ImagesForChoise as any).columns[source.droppableId];
+    const finish = (ImagesForChoise as any).columns[destination.droppableId];
 
     if(start.id ==='column-1'&&
        finish.id ==='column-2'&&
@@ -121,7 +107,7 @@ export default function NewCollection() {
   }
   setImagesForChoise(newImagesForChoise);
   }
-  const createCollection = async( email: string, collectionName: string, collectionType: string, collectionMarkDownValue: string,addedFields: string[],fieldsLocation:boolean[],collectionImage: any)=>{
+  const createCollection = async( email: string, collectionName: string, collectionType: string, collectionMarkDownValue: string|undefined,addedFields: string[],fieldsLocation:boolean[],collectionImage: any)=>{
     try{
         const response = await axios.post("http://localhost:5000/api/auth/createcollection",{
           email,
@@ -151,7 +137,6 @@ export default function NewCollection() {
     const used=checked.map((item,i)=>i===index?item=event.target.checked:item)
     setChecked(used);
   };
-    
   const SendData = ()=>{
     const addFields=[] as string[];
     fields.forEach((item,index)=>{
@@ -159,7 +144,8 @@ export default function NewCollection() {
         addFields.push(item)
       }
     })
-    createCollection(userEmail,name,type,markDownValue,addFields,checked,...ImagesForChoise.columns['column-2'].imagesId)
+
+    createCollection(userEmail,name,type,markDownValue,addFields,checked,ImagesForChoise.columns['column-2'].imagesId.join())
     
     setMarkDownValue('');
     setType('');
@@ -167,20 +153,11 @@ export default function NewCollection() {
     setImagesForChoise(ImagesForChoiseFull);
     const used=checked.map((item)=>item=false)
     setChecked(used);
-    
-  
   }
- 
-
- 
-
-
-  
-
-
-  return (
+ return (
     <Card  className= {s.box}>
     <CardContent>
+    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount"><Button variant="outlined">BACK</Button></NavLink></div>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
        New Collection
       </Typography>
@@ -205,8 +182,8 @@ export default function NewCollection() {
           onChange={handleChange}
           label="Type"
         >
-          <MenuItem value={"Alcogol"}>Alcogol</MenuItem>
-          <MenuItem value={"Cigaretes"}>Cigaretes</MenuItem>
+          <MenuItem value={"Alcogol"}>Alcohol</MenuItem>
+          <MenuItem value={"Cigaretes"}>Cigarette</MenuItem>
           <MenuItem value={"Cars"}>Cars</MenuItem>
           <MenuItem value={"Books"}>Books</MenuItem>
         </Select>
@@ -245,27 +222,20 @@ export default function NewCollection() {
 
     </Box>
   </Box>
-
-
-      
-        <Container>
+    <Container>
           <DragDropContext
           onDragEnd={onDragEnd}>
             <Box className = {s.dragBox}>
         {
           ImagesForChoise.columnOrder.map((columnId)=>{
-            const column = ImagesForChoise.columns[columnId];
-            const imagesRow = column.imagesId.map(image=>ImagesForChoise.images[image])
+            const column = (ImagesForChoise as any).columns[columnId];
+            const imagesRow = column.imagesId.map((image:any)=>(ImagesForChoise as any).images[image])
             return <Column key={column.id} column = { column } imagesRow= {imagesRow}/>
           })
         }
         </Box>
             </DragDropContext>
-        </Container>
-       
-        
-        
-        
+    </Container>
           <Button
               type="submit"
               fullWidth
@@ -276,10 +246,7 @@ export default function NewCollection() {
               Create
           </Button>
           {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
-
-    
-     
-    </CardContent>
+  </CardContent>
 
   </Card>
 

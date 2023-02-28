@@ -1,10 +1,9 @@
 import { s } from '.';
 import * as React from 'react';
-
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { Button, Typography } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
 import { styled } from '@mui/material/styles';
@@ -14,8 +13,6 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Modal from '@mui/material/Modal';
 import CustomDialog from './Dialog';
 
 
@@ -84,6 +81,7 @@ const saveCollectionName = (name: string) =>
  
 return (
     <Container >
+      <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">BACK</Button></NavLink></div>
         <Typography mt={2} align='center' component="h5" variant="h5">
             My Account :"{currentUser.name}"
           </Typography>
@@ -93,7 +91,7 @@ return (
       <Box  mt={3}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       {
-          collection.map((colItem,index)=>{
+          collection.map((colItem:any,index)=>{
             
             return <Grid key={colItem._id} item xs={6}>
             <Item>
@@ -118,7 +116,7 @@ return (
                   saveCollectionName(colItem.collectionName);
                   saveCollectionIndex(index);
                 }}>
-              {colItem.hasOwnProperty("collectionImage")&&<Box><img width ='100px' src={images[colItem.collectionImage]} alt='img'/></Box>}
+              {colItem.hasOwnProperty("collectionImage")&&<Box><img width ='100px' src={(images as any)[colItem.collectionImage]} alt='img'/></Box>}
              <Box className={s.text}>
              Name: {colItem.collectionName}
              </Box>

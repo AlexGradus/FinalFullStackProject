@@ -1,40 +1,21 @@
 import { s } from '.';
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { Button, IconButton, Typography } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
+import { IconButton } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
-import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import MDEditor from '@uiw/react-md-editor';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Modal from '@mui/material/Modal';
-import NewItem from '../../components/NewItem';
-import { off } from 'process';
-import { Delete, Edit, Preview } from '@mui/icons-material';
+import { Delete, Preview } from '@mui/icons-material';
 
 
 
 
-export default function ItemActions({params,getItems}) {
+export default function ItemActions({params,getItems}:any) {
     const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
     const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
     const navigate = useNavigate();
-    const currentUser = useSelector((state:MyState)=>state.app.currentUser);
 
-     
-  
-
-  
-    
-    
     const deleteItem= async(email:string,collectionName:string, id: string)=>{
         try{
              await axios.post("http://localhost:5000/api/auth/deleteitem",{
@@ -52,8 +33,6 @@ export default function ItemActions({params,getItems}) {
        
       }
   
-
- 
 return (
    <Box>
     <IconButton onClick = {()=>{

@@ -1,29 +1,18 @@
 import { s } from '.';
 import * as React from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import { Button, Typography } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
-import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Modal from '@mui/material/Modal';
-import NewItem from '../../components/NewItem';
-
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import EditItem from './EditItem';
-
-
+import Comments from '../../components/Comments/Comments';
+import { NavLink } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 export default function CurrentItem() {
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
@@ -37,10 +26,8 @@ export default function CurrentItem() {
           email,collectionName,id
         }).then(res => {
           setCurrentItem(res.data.result);
-         
-          
-    
-        })
+
+          })
        
     } catch(e){
       if (axios.isAxiosError(e))  {
@@ -55,12 +42,16 @@ export default function CurrentItem() {
  
 return (
   <Card sx={{ width: 275 }}>
+     <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/items/"><Button variant="outlined">BACK</Button></NavLink></div>
   <CardContent>
   <div>
         Current Item: {currentItem?currentItem.item.itemName:''}
    </div>
    <div>
         Id: {currentItem?currentItem.item.id:''}
+   </div>
+   <div>
+        Tags: {currentItem?currentItem.item.tags:''}
    </div>
    {currentItem?currentItem.fieldsLocation[0]? <Box>
    <div>
@@ -72,11 +63,7 @@ return (
        Description: <MDEditor.Markdown source={currentItem?currentItem.item.description:''} style={{ whiteSpace: 'pre-wrap' }} />
    </div>
    </Box>: <></>:'' }
-   {currentItem?currentItem.fieldsLocation[2]? <Box>
-   <div>
-       Comments: <MDEditor.Markdown source={currentItem?currentItem.item.comments:''} style={{ whiteSpace: 'pre-wrap' }} />
-   </div>
-   </Box>: <></>:'' }
+  
    {currentItem?currentItem.fieldsLocation[3]? <Box>
    <div>
         Damage: {currentItem?currentItem.item.damage:''}
@@ -137,21 +124,23 @@ return (
        Cost: {currentItem?currentItem.item.cost:''} $
    </div>
    </Box>: <></>:'' }
-
-
+   {currentItem?currentItem.fieldsLocation[2]? <Box>
+   <div>
+       Comments:
+   </div>
+   { <Comments comments={currentItem.item.comments}/>}
+   </Box>: <></>:'' }
   </CardContent>
   <CardActions>
   <React.Fragment >
-                  <EditItem
-                    data={currentItem}
-                    getCurrentItem={getCurrentItem}
-                   
-  
-                  />
-            </React.Fragment>
+      <EditItem
+          data={currentItem}
+          getCurrentItem={getCurrentItem}
+           />
+  </React.Fragment>
   </CardActions>
 </Card>
-
-  
-  );
+ );
 }
+
+

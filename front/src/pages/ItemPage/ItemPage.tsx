@@ -4,20 +4,11 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { Button, Typography } from '@mui/material';
-import { Link, useNavigate } from "react-router-dom";
+import {  NavLink, useNavigate } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
-import { styled } from '@mui/material/styles';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import MDEditor from '@uiw/react-md-editor';
-import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import Modal from '@mui/material/Modal';
-import NewItem from '../../components/NewItem';
-import { off } from 'process';
 import ItemActions from './ItemActions';
 
 
@@ -25,9 +16,7 @@ import ItemActions from './ItemActions';
 
 export default function ItemPage() {
   const [items, setItems] = useState([]);
-  const [checkedData, setCheckedData] = useState('');
-  const [columns, setColumns] = useState([
-    ]);
+  const [columns, setColumns] = useState([]);
   
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
   const navigate = useNavigate();
@@ -54,13 +43,13 @@ const getItems = async(email:string,collectionName:string)=>{
           { field: 'itemName', headerName: 'Name', width: 150 },
           
         ];
-        res.data.items.fieldsLocation.map((item,index)=>{
+        res.data.items.fieldsLocation.map((item:any,index:number)=>{
           if(item){
            
             UsedFields.push({field:fields[index],headerName: fields[index], width: 150})
           }
         })
-        setColumns(UsedFields);
+        setColumns(UsedFields as any);
   
       })
      
@@ -78,6 +67,7 @@ useEffect(() => {
  
 return (
     <Container >
+       <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/"><Button variant="outlined">BACK</Button></NavLink></div>
         <Typography mt={2} align='center' component="h5" variant="h5">
             My Collection :"{collectionName}"
           </Typography>

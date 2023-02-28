@@ -4,23 +4,18 @@ import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import { ChangeEvent, SyntheticEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
-import { Alert, CardContent, Input, TextField } from '@mui/material';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import {  Autocomplete, CardContent, Input, TextField } from '@mui/material';
 import MDEditor from '@uiw/react-md-editor';
-import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
-import Switch, { SwitchProps } from '@mui/material/Switch';
+import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Slider from '@mui/material/Slider';
@@ -28,15 +23,16 @@ import { LocalizationProvider, MobileDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
+import { pushTags } from '../../api/api';
 
 
-
-
-const EditItem = (props) => {
+const EditItem = (props: any) => {
+  const [tagsForAutocomplete, setTagsForAutocomplete] = useState([]);
   const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
   const currentUser = useSelector((state:MyState)=>state.app.currentUser.email);
   useEffect(() => {
     setName(props.data?props.data.item.itemName:'')
+    setTags(props.data?props.data.item.tags:'')
     setMarkDownValueDescription(props.data?props.data.item.description:'')
     setMarkDownValueComments(props.data?props.data.item.comments:'')
     setMarkDownValueNotes(props.data?props.data.item.notes:'')
@@ -55,11 +51,12 @@ const EditItem = (props) => {
     setValueCreated(props.data?props.data.item.created:'')
   },[props]);
 
-  const [markDownValueDescription,setMarkDownValueDescription] = useState('');
+  const [markDownValueDescription,setMarkDownValueDescription] = useState('' as string | undefined);
   const [markDownValueComments,setMarkDownValueComments] = useState('' as string | undefined);
   const [markDownValueNotes,setMarkDownValueNotes] = useState('' as string | undefined);
   const [id, setId] = useState('');
   const [name, setName] = useState(''); 
+  const [tags, setTags] = useState(''); 
   const [madeIn, setMadeIn] = useState(''); 
   const [damage, setDamage] = useState(''); 
   const [condition, setCondition] = useState(''); 
@@ -90,6 +87,9 @@ const EditItem = (props) => {
   };
   const ChangeName = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
+  };
+  const ChangeTags= (event: ChangeEvent<HTMLInputElement>) => {
+    setTags(event.target.value);
   };
   const ChangeMadeIn = (event: ChangeEvent<HTMLInputElement>) => {
     setMadeIn(event.target.value);
@@ -182,19 +182,18 @@ const EditItem = (props) => {
           margin: 2,
         },
       }));
-
-      const checkForSale = (event: SyntheticEvent<Element, Event>) => {
+      const checkForSale = (event: boolean | ((prevState: boolean) => boolean)) => {
        
-        setForSale(event.target.checked);
+        setForSale(event);
       };
-      const checkForeign = (event: SyntheticEvent<Element, Event>) => {
+      const checkForeign = (event: boolean | ((prevState: boolean) => boolean)) => {
        
-        setForeign(event.target.checked);
+        setForeign(event);
       };
      
-      const checkStock = (event: SyntheticEvent<Element, Event>) => {
+      const checkStock = (event: boolean | ((prevState: boolean) => boolean)) => {
        
-        setStock(event.target.checked);
+        setStock(event);
       };
 
      
@@ -228,10 +227,10 @@ const [open, setOpen] = useState(false);
       const editItem = async( email: string,
         collectionName: string, itemName: string,
         id: string,madeIn:string, condition: string,damage: string,
-        comments: string,description: string, notes: string,
+        comments: string | undefined,description: string | undefined, notes: string | undefined,
         forSale: Boolean,foreign: Boolean,inStock: Boolean,
-        created: Date,bought: Date,firstRegistration: Date,amount: Number,
-        readyToSail: Number,cost: Number,originalId:string)=>{
+        created: Dayjs | null,bought: Dayjs | null,firstRegistration: Dayjs | null,amount: string | number | (string | number)[],
+        readyToSail: string | number | (string | number)[],cost: string | number | (string | number)[],originalId:string,tags:string)=>{
         try{
              await axios.post("http://localhost:5000/api/auth/edititem",{
               email,
@@ -253,7 +252,9 @@ const [open, setOpen] = useState(false);
               amount,
               readyToSail,
               cost,
-              originalId
+              originalId,
+              userComment:'',
+              tags
             })
             
         } catch(e){
@@ -263,9 +264,25 @@ const [open, setOpen] = useState(false);
         }
        
       }
+      const getTags = async(name:string)=>{
+        try{
+          await axios.post("http://localhost:5000/api/auth/gettags",{
+              name
+            }).then(res => {
+              setTagsForAutocomplete(res.data.tags.tags)
+            })
+            
+        } catch(e){
+          if (axios.isAxiosError(e))  {
+            console.log(e.response?.data.message );
+          } 
+        }
+       }
+       useEffect(() => {
+        getTags('282')
+      },[tags]);
       return(
         <div>
-        
       <Button  onClick={()=>handleClickOpen()} startIcon={<EditOutlinedIcon />}>
 
       </Button>
@@ -296,13 +313,17 @@ const [open, setOpen] = useState(false);
       value={id}
       onChange={ChangeId}
      />
-      <TextField 
-      id="outlined-basic" 
-      label="Name" 
-      variant="outlined"
-      value={name}
-      onChange={ChangeName}
-     />
+     
+      <Autocomplete
+        id="free-solo-demo"
+        freeSolo
+        options={tagsForAutocomplete.map((option) => option)}
+        onChange={(event, newValue) => {
+          setTags(newValue as string);
+        }}
+        
+        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label="Tags(via ',')"  />}
+      />
       {props.data?props.data.fieldsLocation[0]? <TextField 
       id="outlined-basic" 
       label="Made In" 
@@ -316,11 +337,7 @@ const [open, setOpen] = useState(false);
           <MDEditor
               value={markDownValueDescription}
               onChange={setMarkDownValueDescription} /></> : <></>:''  }
-     {props.data?props.data.fieldsLocation[2]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Comments
-          </Typography><MDEditor
-              value={markDownValueComments}
-              onChange={setMarkDownValueComments} /></> : <></>:'' }
+    
      {props.data?props.data.fieldsLocation[3]? <TextField 
       id="outlined-basic" 
       label="Damage" 
@@ -439,21 +456,21 @@ const [open, setOpen] = useState(false);
     <FormControlLabel
         control={<Android12Switch checked={forSale} />}
         label="For Sale"
-        onChange={e =>checkForSale(e)}
+        onChange={(event, newValue) => {checkForSale(newValue)}}
       />
     </Box>: <></>:'' }
     {props.data?props.data.fieldsLocation[7]?<Box>
     <FormControlLabel
         control={<Android12Switch checked={foreign} />}
         label="Foreign"
-        onChange={e =>checkForeign(e)}
+        onChange={(event, newValue) => {checkForeign(newValue)}}
       />
     </Box>: <></>:'' }
     {props.data?props.data.fieldsLocation[8]? <Box>
     <FormControlLabel
         control={<Android12Switch checked={stock} />}
         label="In Stock"
-        onChange={e =>checkStock(e)}
+        onChange={(event, newValue) => {checkStock(newValue)}}
       />
     </Box>: <></>:'' }
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -520,9 +537,12 @@ const [open, setOpen] = useState(false);
                   valueAmount,
                   valueSail,
                   valueCost,
-                  props.data.item.id
+                  props.data.item.id,
+                  tags
                   )
+                  
                   localStorage.setItem("ItemId", JSON.stringify(id));
+                  pushTags('282',String(tags))
                 }
                 }
             >
