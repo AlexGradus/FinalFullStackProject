@@ -15,9 +15,11 @@ import { setUser } from '../../store/appReducer';
 import { useState } from 'react';
 import { Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 
 export default function SignIn() {
+  const { t } = useTranslation();
   const [alertContent, setAlertContent] = useState('');
   const navigate = useNavigate();
   const login = (email:string, password:string, name:string)=>{
@@ -65,7 +67,7 @@ export default function SignIn() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign in
+          {t('SignIn.Title')}
           </Typography>
           <Box component="form" onSubmit={handleSubmit((data) => (dispatch as any)(login(data.email,data.password,data.name)))}>
             <TextField
@@ -74,31 +76,31 @@ export default function SignIn() {
               required
          
               id="email"
-              label="Email Address"
+              label={t('SignIn.InpLogin')}
               {...register('email', { required: true })}
               autoComplete="email"
               autoFocus
             />
-            {errors.email && <p className={s.error}>Email is required.</p>}
+            {errors.email && <p className={s.error}>{t('SignIn.LoginError')}</p>}
             <TextField
               style = {{width: 400}} 
               margin="normal"
               required
               
               {...register('password', { required: true })}
-              label="Password"
+              label={t('SignIn.InpPass')}
               type="password"
               id="password"
               autoComplete="current-password"
             />
-            {errors.password && <p className={s.error}>Password is required.</p>}
+            {errors.password && <p className={s.error}>{t('SignIn.PasswordError')}</p>}
             <Button
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+               {t('SignIn.Title')}
             </Button>
             {alertContent? <Alert severity='error'>{alertContent}</Alert> : <></> }
           </Box>

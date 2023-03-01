@@ -16,9 +16,11 @@ import DoDisturbOnIcon from '@mui/icons-material/DoDisturbOn';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 
 export default function AdminPage() {
+  const { t } = useTranslation();
  const [userList, setUserList] = useState([]);
 
   const getUsers = async()=>{
@@ -142,9 +144,9 @@ const notAdminUser = async(checked:string)=>{
  
 return (
     <Container >
-       <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">BACK</Button></NavLink></div>
+       <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
         <Typography mt={2} align='center' component="h5" variant="h5">
-            My Account :"{currentUser.name}"
+        {t('AdminPage.MyAcc')} :"{currentUser.name}"
           </Typography>
      
       <Box  mt={3}>
@@ -175,7 +177,7 @@ return (
                 } }>
  
              <Box className={s.text}>
-             Name: {user.name}
+             {t('AdminPage.Name')}: {user.name}
              </Box>
                  
             
@@ -184,10 +186,10 @@ return (
                </Typography>
               <Box>
               <Typography mt={1} align='center' component="h6" variant="h6">
-                Blocked:{user.block}
+              {t('AdminPage.Blocked')}:{user.block}
                </Typography>
                <Typography mt={1} align='center' component="h6" variant="h6">
-                Admin:{user.isAdmin}
+               {t('AdminPage.Admin')}:{user.isAdmin}
                </Typography>
        
               </Box>

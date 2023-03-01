@@ -23,12 +23,13 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { pushTags } from '../../api/api';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 const Input = styled(MuiInput)`
   width: 42px;
 `;
 
 export default function NewItem() {
-  
+  const { t } = useTranslation();
   const [tagsForAutocomplete, setTagsForAutocomplete] = useState([]);
   const [alertContent, setAlertContent] = useState('');
   const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
@@ -299,9 +300,9 @@ export default function NewItem() {
   return (
     <Card  className= {s.box}>
     <CardContent>
-    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/items/"><Button variant="outlined">BACK</Button></NavLink></div>
+    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/items/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       New Item '{collectionName}'
+      {t('Item.TitleNew')} '{collectionName}'
       </Typography>
       <Box
       component="form"
@@ -320,7 +321,7 @@ export default function NewItem() {
      />
       <TextField 
       id="outlined-basic" 
-      label="Name" 
+      label={t('Item.Name')} 
       variant="outlined"
       value={name}
       onChange={ChangeName}
@@ -334,42 +335,42 @@ export default function NewItem() {
           setTags(newValue as string);
         }}
         
-        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label="Tags(via ',')"  />}
+        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label={t('Item.Tags')}   />}
       />
       {addedFields.includes('Made In')? <TextField 
       id="outlined-basic" 
-      label="Made In" 
+      label={t('Item.MadeIn')} 
       variant="outlined"
       value={madeIn}
       onChange={ChangeMadeIn}
      /> : <></> }
      {addedFields.includes('Description')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-         Description
+     {t('Item.Description')} 
           </Typography>
           <MDEditor
               value={markDownValueDescription}
               onChange={setMarkDownValueDescription} /></> : <></> }
      {addedFields.includes('Comments')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Comments
+     {t('Item.Comments')} 
           </Typography><MDEditor
               value={markDownValueComments}
               onChange={setMarkDownValueComments} /></> : <></> }
      {addedFields.includes('Damage')? <TextField 
       id="outlined-basic" 
-      label="Damage" 
+      label= {t('Item.Damage')} 
       variant="outlined"
       value={damage}
       onChange={ChangeDamage}
      /> : <></> }
      {addedFields.includes('Condition')? <TextField 
       id="outlined-basic" 
-      label="Condition" 
+      label={t('Item.Condition')}  
       variant="outlined"
       value={condition}
       onChange={ChangeCondition}
      /> : <></> }
      {addedFields.includes('Notes')?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Notes
+     {t('Item.Notes')}  
           </Typography><MDEditor
               value={markDownValueNotes}
               onChange={setMarkDownValueNotes} /></> : <></> }
@@ -377,7 +378,7 @@ export default function NewItem() {
       </Box>
       {addedFields.includes('Amount')? <Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
-        Amount
+      {t('Item.Amount')}  
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -408,7 +409,7 @@ export default function NewItem() {
     </Box>: <></> }
     {addedFields.includes('Ready To Sail')? <Box sx={{ width: 250 }}>
    <Typography id="input-slider" gutterBottom>
-        Ready to Sail($x100)
+       {t('Item.ReadyToSail')}  
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -439,7 +440,7 @@ export default function NewItem() {
     </Box> : <></> }
     {addedFields.includes('Cost')?<Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
-        Cost ($x100)
+      {t('Item.Cost')}  
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -471,28 +472,28 @@ export default function NewItem() {
     {addedFields.includes('For Sale')? <Box>
     <FormControlLabel
         control={<Android12Switch checked={forSale} />}
-        label="For Sale"
+        label={t('Item.ForSale')}  
         onChange={e =>checkForSale(e)}
       />
     </Box>: <></> }
     {addedFields.includes('Foreign')?<Box>
     <FormControlLabel
         control={<Android12Switch checked={foreign} />}
-        label="Foreign"
+        label={t('Item.Foreign')}  
         onChange={e =>checkForeign(e)}
       />
     </Box>: <></> }
     {addedFields.includes('In Stock')? <Box>
     <FormControlLabel
         control={<Android12Switch checked={stock} />}
-        label="In Stock"
+        label={t('Item.InStock')}  
         onChange={e =>checkStock(e)}
       />
     </Box>: <></> }
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     {addedFields.includes('Created')? <Box mt={2}>
       <MobileDatePicker
-          label="Created"
+          label={t('Item.Created')}  
           inputFormat="MM/DD/YYYY"
           value={valueCreated}
           onChange={handleChangeCreated}
@@ -502,7 +503,7 @@ export default function NewItem() {
 
       {addedFields.includes('Bought')?<Box mt={2}>
         <MobileDatePicker
-          label="Bought"
+          label={t('Item.Bought')}  
           inputFormat="MM/DD/YYYY"
           value={valueBought}
           onChange={handleChangeBought}
@@ -511,7 +512,7 @@ export default function NewItem() {
         </Box>:<></> }
         {addedFields.includes('First Registration')? <Box mt={2}>
         <MobileDatePicker
-          label="First Registration"
+          label={t('Item.FirstRegistration')}  
           inputFormat="MM/DD/YYYY"
           value={valueRegistration}
           onChange={handleChangeRegistration}
@@ -526,7 +527,7 @@ export default function NewItem() {
               sx={{ mt: 3, mb: 2 }}
               onClick={SendData}
             >
-              Create
+              {t('Buttons.Create')}  
           </Button>
           {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
      

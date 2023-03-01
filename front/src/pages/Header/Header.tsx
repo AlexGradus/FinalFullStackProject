@@ -16,6 +16,7 @@ import { logout, setAdminData, setDarkMode, setUsedByAdmin, setUser } from '../.
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 
 export default function Header() {
@@ -24,6 +25,7 @@ export default function Header() {
   const admin = useSelector((state:MyState)=>state.app.usedByAdmin);
   const currentUser = useSelector((state:MyState)=>state.app);
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -63,7 +65,7 @@ export default function Header() {
   
    
 }
-
+const { i18n } = useTranslation();
  return (
     <Box sx={{ flexGrow: 1 }}>
      
@@ -71,7 +73,7 @@ export default function Header() {
         <Toolbar>
         <Box>
             <Typography align="center"  variant="body2" component="div">
-            Dark:
+            {t('Header.Theme')}
           </Typography>
           <Switch
               checked={darkMode as unknown as boolean | undefined}
@@ -81,15 +83,19 @@ export default function Header() {
               }}
               inputProps={{ 'aria-label': 'controlled' }}
           />
+           
           </Box>
-        {!auth&&<div><NavLink className={s.button} to ="/login">Sign in</NavLink></div>}
-        {!auth&& <div ><NavLink className={s.button} to ="/registration">Sign up</NavLink></div>}
+          
+          
+        {!auth&&<div><NavLink className={s.button} to ="/login"> {t('Header.SignIn')}</NavLink></div>}
+        {!auth&& <div ><NavLink className={s.button} to ="/registration">{t('Header.SignUp')}</NavLink></div>}
+        
 
         {auth&&<Typography className={s.button} onClick={()=>{
           dispatch(setUsedByAdmin(false))
           dispatch(setAdminData({email:'',password:'',name:''}))
           dispatch(logout())}} variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Log Out
+            {t('Header.LogOut')}
           </Typography>}
        
         {admin&&<Typography className={s.button} onClick={()=>{
@@ -97,7 +103,7 @@ export default function Header() {
           dispatch(setUsedByAdmin(false))
           dispatch(setAdminData({email:'',password:'',name:''}))
         }} variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Return to Your Acc
+            {t('Header.Return')}
           </Typography>}
           {auth && (
             <div>
@@ -126,11 +132,27 @@ export default function Header() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={ChangeToAdminPage}>Admin</MenuItem>
-                <MenuItem onClick={ChangeToMyAccount}>My account</MenuItem>
+                <MenuItem onClick={ChangeToAdminPage}>{t('Header.Admin')}</MenuItem>
+                <MenuItem onClick={ChangeToMyAccount}>{t('Header.MyAcc')}</MenuItem>
               </Menu>
             </div>
           )}
+          <Box>
+          <Typography align="center"  variant="body2" component="div">
+          {t('Header.LanguageSwitcher')}
+          </Typography>
+          <Switch
+          checked={i18n.language==='en'?true:false}
+          color="default" 
+          onChange={
+            () =>{ 
+              i18n.changeLanguage(i18n.language === 'en' ? 'ru' : 'en')
+              localStorage.setItem("Lang", JSON.stringify(i18n.language))
+              
+            }}
+           
+        />
+          </Box>
           
      
        </Toolbar>

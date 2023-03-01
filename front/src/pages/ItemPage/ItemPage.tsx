@@ -10,11 +10,13 @@ import { MyState } from '../../interface/interface';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import ItemActions from './ItemActions';
+import { useTranslation } from 'react-i18next';
 
 
 
 
 export default function ItemPage() {
+  const { t } = useTranslation();
   const [items, setItems] = useState([]);
   const [columns, setColumns] = useState([]);
   
@@ -67,12 +69,12 @@ useEffect(() => {
  
 return (
     <Container >
-       <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/"><Button variant="outlined">BACK</Button></NavLink></div>
+       <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
         <Typography mt={2} align='center' component="h5" variant="h5">
-            My Collection :"{collectionName}"
+        {t('GeneralItemsPage.MyCollection')}:"{collectionName}" 
           </Typography>
       <Box mt={3}>
-      <Button onClick={CreateNewItem}  variant="outlined">Create New Item</Button>
+      <Button onClick={CreateNewItem}  variant="outlined">{t('Buttons.CreateItem')}</Button>
       </Box>
       <div style={{ height: 400, width: '100%' }}>
       <DataGrid

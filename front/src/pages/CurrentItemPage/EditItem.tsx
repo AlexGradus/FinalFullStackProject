@@ -24,9 +24,11 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useSelector } from 'react-redux';
 import { MyState } from '../../interface/interface';
 import { pushTags } from '../../api/api';
+import { useTranslation } from 'react-i18next';
 
 
 const EditItem = (props: any) => {
+  const { t } = useTranslation();
   const [tagsForAutocomplete, setTagsForAutocomplete] = useState([]);
   const collectionName = JSON.parse( localStorage.getItem("CollectionName") as string );
   const currentUser = useSelector((state:MyState)=>state.app.currentUser.email);
@@ -293,7 +295,7 @@ const [open, setOpen] = useState(false);
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Edit Item"}
+        {t('Item.EditItem')} 
         </DialogTitle>
         <DialogContent>
         <Card  className= {s.box}>
@@ -322,17 +324,17 @@ const [open, setOpen] = useState(false);
           setTags(newValue as string);
         }}
         
-        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label="Tags(via ',')"  />}
+        renderInput={(params) => <TextField value={tags} onChange={ChangeTags} {...params} label={t('Item.Tags')}   />}
       />
       {props.data?props.data.fieldsLocation[0]? <TextField 
       id="outlined-basic" 
-      label="Made In" 
+      label={t('Item.MadeIn')}
       variant="outlined"
       value={madeIn}
       onChange={ChangeMadeIn}
      /> : <></>:'' }
      {props.data?props.data.fieldsLocation[1]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-         Description
+     {t('Item.Description')}
           </Typography>
           <MDEditor
               value={markDownValueDescription}
@@ -340,20 +342,20 @@ const [open, setOpen] = useState(false);
     
      {props.data?props.data.fieldsLocation[3]? <TextField 
       id="outlined-basic" 
-      label="Damage" 
+      label={t('Item.Damage')} 
       variant="outlined"
       value={damage}
       onChange={ChangeDamage}
      /> : <></>:'' }
      {props.data?props.data.fieldsLocation[4]? <TextField 
       id="outlined-basic" 
-      label="Condition" 
+      label={t('Item.Condition')}
       variant="outlined"
       value={condition}
       onChange={ChangeCondition}
      /> : <></>:''  }
      {props.data?props.data.fieldsLocation[5]?<><Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            Notes
+     {t('Item.Notes')}
           </Typography><MDEditor
               value={markDownValueNotes}
               onChange={setMarkDownValueNotes} /></> : <></>:'' }
@@ -361,7 +363,7 @@ const [open, setOpen] = useState(false);
       </Box>
       {props.data?props.data.fieldsLocation[12]? <Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
-        Amount
+      {t('Item.Amount')}
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -392,7 +394,7 @@ const [open, setOpen] = useState(false);
     </Box>: <></>:''  }
     {props.data?props.data.fieldsLocation[13]? <Box sx={{ width: 250 }}>
    <Typography id="input-slider" gutterBottom>
-        Ready to Sail($x100)
+      {t('Item.ReadyToSail')}
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -423,7 +425,7 @@ const [open, setOpen] = useState(false);
     </Box> : <></>:'' }
     {props.data?props.data.fieldsLocation[14]?<Box sx={{ width: 250 }}>
       <Typography id="input-slider" gutterBottom>
-        Cost ($x100)
+      {t('Item.Cost')}
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -455,28 +457,28 @@ const [open, setOpen] = useState(false);
     {props.data?props.data.fieldsLocation[6]? <Box>
     <FormControlLabel
         control={<Android12Switch checked={forSale} />}
-        label="For Sale"
+        label={t('Item.ForSale')}
         onChange={(event, newValue) => {checkForSale(newValue)}}
       />
     </Box>: <></>:'' }
     {props.data?props.data.fieldsLocation[7]?<Box>
     <FormControlLabel
         control={<Android12Switch checked={foreign} />}
-        label="Foreign"
+        label={t('Item.Foreign')}
         onChange={(event, newValue) => {checkForeign(newValue)}}
       />
     </Box>: <></>:'' }
     {props.data?props.data.fieldsLocation[8]? <Box>
     <FormControlLabel
         control={<Android12Switch checked={stock} />}
-        label="In Stock"
+        label={t('Item.InStock')}
         onChange={(event, newValue) => {checkStock(newValue)}}
       />
     </Box>: <></>:'' }
     <LocalizationProvider dateAdapter={AdapterDayjs}>
     {props.data?props.data.fieldsLocation[9]? <Box mt={2}>
       <MobileDatePicker
-          label="Created"
+          label={t('Item.Created')}
           inputFormat="MM/DD/YYYY"
           value={valueCreated}
           onChange={handleChangeCreated}
@@ -486,7 +488,7 @@ const [open, setOpen] = useState(false);
 
       {props.data?props.data.fieldsLocation[10]?<Box mt={2}>
         <MobileDatePicker
-          label="Bought"
+          label={t('Item.Bought')}
           inputFormat="MM/DD/YYYY"
           value={valueBought}
           onChange={handleChangeBought}
@@ -495,7 +497,7 @@ const [open, setOpen] = useState(false);
         </Box>:<></>:'' }
         {props.data?props.data.fieldsLocation[11]? <Box mt={2}>
         <MobileDatePicker
-          label="First Registration"
+          label={t('Item.FirstRegistration')}
           inputFormat="MM/DD/YYYY"
           value={valueRegistration}
           onChange={handleChangeRegistration}
@@ -546,13 +548,13 @@ const [open, setOpen] = useState(false);
                 }
                 }
             >
-              Edit
+              {t('Item.EditItem')}
           </Button>
           <Button onClick={()=>{
             handleClose();
             props.getCurrentItem(currentUser,collectionName,id);
             }} autoFocus>
-          Close
+          {t('Buttons.Close')}
           </Button>
         
      

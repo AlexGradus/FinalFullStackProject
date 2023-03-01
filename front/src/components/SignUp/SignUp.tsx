@@ -12,9 +12,12 @@ import { s } from './';
 import { useState } from 'react';
 import axios from 'axios';
 import { Alert } from '@mui/material';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 
 
 export default function SignUp() {
+  const { t } = useTranslation();
   const [alertContent, setAlertContent] = useState('');
   const registration = async(email:string, password:string, name:string)=>{
     try{
@@ -61,7 +64,7 @@ export default function SignUp() {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            {t('SignUp.Title')}
           </Typography>
           
           <Box component="form" noValidate onSubmit={handleSubmit((data) => 
@@ -76,33 +79,33 @@ export default function SignUp() {
                   required
                   style = {{width: 400}} 
                   id="name"
-                  label="name"
+                  label={t('SignUp.InpName')}
                   autoFocus
                 />
-                {errors.name && <p className={s.error}>Name is required.</p>}
+                {errors.name && <p className={s.error}>{t('SignUp.NameError')}</p>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   style = {{width: 400}} 
                   id="email"
-                  label="Email Address"
+                  label={t('SignUp.InpLogin')}
                   {...register('email', { required: true })}
                   autoComplete="email"
                 />
-                {errors.email && <p className={s.error}>Email is required.</p>}
+                {errors.email && <p className={s.error}>{t('SignUp.LoginError')}</p>}
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
                   style = {{width: 400}} 
                   {...register('password', { required: true })}
-                  label="Password"
+                  label={t('SignUp.InpPass')}
                   type="password"
                   id="password"
                   autoComplete="new-password"
                 />
-                {errors.password && <p className={s.error}>Password is required.</p>}
+                {errors.password && <p className={s.error}>{t('SignUp.PasswordError')}</p>}
               </Grid>
             </Grid>
             <Button
@@ -111,7 +114,7 @@ export default function SignUp() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign Up
+             {t('SignUp.Title')}
             </Button>
             {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
           </Box>

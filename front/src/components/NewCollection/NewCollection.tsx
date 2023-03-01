@@ -21,8 +21,10 @@ import { MyState } from '../../interface/interface';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { NavLink } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export default function NewCollection() {
+  const { t } = useTranslation();
   const userEmail = useSelector((state:MyState)=>state.app.currentUser.email);
   const [alertContent, setAlertContent] = useState('');
   const [markDownValue, setMarkDownValue] = useState('' as string | undefined);
@@ -157,9 +159,9 @@ export default function NewCollection() {
  return (
     <Card  className= {s.box}>
     <CardContent>
-    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount"><Button variant="outlined">BACK</Button></NavLink></div>
+    <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       New Collection
+      {t('NewCollection.Title')} 
       </Typography>
       <Box
       component="form"
@@ -171,12 +173,12 @@ export default function NewCollection() {
     >
       <TextField 
       id="outlined-basic" 
-      label="Name" 
+      label={t('NewCollection.Name')}
       variant="outlined"
       value={name}
       onChange={ChangeName}
      />
-          <InputLabel id="demo-simple-select-standard-label">Type</InputLabel>
+          <InputLabel id="demo-simple-select-standard-label">{t('NewCollection.Type')}</InputLabel>
         <Select
           value={type}
           onChange={handleChange}
@@ -190,7 +192,7 @@ export default function NewCollection() {
       </Box>
       <Box>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       Description(Markdown):
+      {t('NewCollection.DescriptionMark')}:
       </Typography>
       <MDEditor
         value={markDownValue}
@@ -200,10 +202,10 @@ export default function NewCollection() {
       </Box>
       <Box>
       <Typography mt={2} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       Additional fields for Item
+      {t('NewCollection.AddFields')}
       </Typography>
     <FormControlLabel
-      label="All"
+      label={t('NewCollection.AllFields')}
       control={
         <Checkbox
           checked={checked[0] && checked[1]}
@@ -243,7 +245,7 @@ export default function NewCollection() {
               sx={{ mt: 3, mb: 2 }}
               onClick={SendData}
             >
-              Create
+              {t('Buttons.Create')}
           </Button>
           {alertContent? <Alert severity='info'>{alertContent}</Alert> : <></> }
   </CardContent>

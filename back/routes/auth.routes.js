@@ -3,6 +3,7 @@ const User = require("../models/User");
 const UserItems = require("../models/UserItems");
 const Tags = require("../models/Tags");
 const UserCollection = require("../models/UserCollection");
+const Likes = require("../models/Likes");
 const bcrypt = require("bcrypt");
 const config = require("config");
 const {check, validationResult } = require("express-validator");
@@ -561,6 +562,41 @@ router.post('/gettags', async (req, res) =>{
         
         return res.json({
             tags
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+
+router.post('/likes', async (req, res) =>{
+    try {
+        const {email,collectionName,id,likes} = req.body;
+        const LikesUpdate = await Likes.findOne({email,collectionName,id});
+        
+        if(LikesUpdate){
+         
+            await Likes.updateOne({ email,collectionName,id },{$set:{likes:likes}});
+             
+            return res.json({message:'Like system is updated'});
+        }
+        const Like = new Likes({ email,collectionName,id,likes:likes });
+        await Like.save();
+        return res.json({message:'Tag system is created'});
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+router.post('/getlikes', async (req, res) =>{
+    try {
+        const {email,collectionName,id} = req.body;
+        const likes = await Likes.findOne({email,collectionName,id});
+        
+        return res.json({
+            likes
         })
 
     } catch(e){

@@ -16,10 +16,12 @@ import MDEditor from '@uiw/react-md-editor';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 
 
 const CustomDialog = (props:any) => {
+  const { t } = useTranslation();
   const fields = ['Made In','Description','Comments','Damage','Condition','Notes','For Sale','Foreign','In Stock','Created','Bought','First Registration','Amount','Ready To Sail','Cost'];
   const [checked, setChecked] = React.useState(props.fieldsLocation);
   const additionalFieldsCheckAll = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,7 +82,7 @@ const CustomDialog = (props:any) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Edit Collection"}
+        {t('NewCollection.Edit')} 
         </DialogTitle>
         <DialogContent>
       <Box
@@ -93,7 +95,7 @@ const CustomDialog = (props:any) => {
     >
       <TextField 
       id="outlined-basic" 
-      label="Name" 
+      label={t('NewCollection.Name')} 
       variant="outlined"
       value={name}
       onChange={ChangeName}
@@ -102,7 +104,7 @@ const CustomDialog = (props:any) => {
         <Select
           value={type}
           onChange={handleChange}
-          label="Type"
+          label={t('NewCollection.Type')} 
         >
           <MenuItem value={"Alcogol"}>Alcogol</MenuItem>
           <MenuItem value={"Cigaretes"}>Cigaretes</MenuItem>
@@ -112,7 +114,7 @@ const CustomDialog = (props:any) => {
       </Box>
       <Box>
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       Description(Markdown):
+      {t('NewCollection.DescriptionMark')}:
       </Typography>
       <MDEditor
         value={markDownValue}
@@ -122,10 +124,10 @@ const CustomDialog = (props:any) => {
       </Box>
       <div>
       <Typography mt={2} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-       Additional fields for Item
-      </Typography>
+      {t('NewCollection.AddFields')}
+      </Typography> 
     <FormControlLabel
-      label="All"
+      label={t('NewCollection.AllFields')}
       control={
         <Checkbox
           checked={checked[0] && checked[1]}
@@ -161,7 +163,7 @@ const CustomDialog = (props:any) => {
       
               }}
             >
-              Edit
+              {t('NewCollection.Edit')}
      </Button>
         </DialogContent>
         <DialogActions>
@@ -169,7 +171,7 @@ const CustomDialog = (props:any) => {
             handleClose();
             props.getCollection(props.currentUser);
             }} autoFocus>
-          Close
+          {t('Buttons.Close')}
           </Button>
         </DialogActions>
       </Dialog>

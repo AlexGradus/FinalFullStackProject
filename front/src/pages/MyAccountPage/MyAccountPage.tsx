@@ -14,10 +14,12 @@ import { useEffect, useState } from 'react';
 import MDEditor from '@uiw/react-md-editor';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import CustomDialog from './Dialog';
+import { useTranslation } from 'react-i18next';
 
 
 
 export default function MyAccountPage() {
+  const { t } = useTranslation();
   const images = {
     img_1:'https://i.ibb.co/smW7Lm5/alcohol.jpg',
     img_2:'https://i.ibb.co/8bSzGmG/oldbooks.webp',
@@ -81,12 +83,12 @@ const saveCollectionName = (name: string) =>
  
 return (
     <Container >
-      <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">BACK</Button></NavLink></div>
+      <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
         <Typography mt={2} align='center' component="h5" variant="h5">
-            My Account :"{currentUser.name}"
+        {t('MyAccountPage.MyAcc')} :"{currentUser.name}"
           </Typography>
       <Box mt={3}>
-      <Button onClick={CreateNewCollection}  variant="outlined">Create New Collection</Button>
+      <Button onClick={CreateNewCollection}  variant="outlined">{t('MyAccountPage.CreateCollection')}</Button>
       </Box>
       <Box  mt={3}>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -118,16 +120,16 @@ return (
                 }}>
               {colItem.hasOwnProperty("collectionImage")&&<Box><img width ='100px' src={(images as any)[colItem.collectionImage]} alt='img'/></Box>}
              <Box className={s.text}>
-             Name: {colItem.collectionName}
+             {t('MyAccountPage.Name')}: {colItem.collectionName}
              </Box>
                  
             
               <Typography  mt={1} align='center' component="h6" variant="h6">
-                 Type: {colItem.collectionType}
+              {t('MyAccountPage.Type')}: {colItem.collectionType}
                </Typography>
               <Box>
               <Typography mt={1} align='center' component="h6" variant="h6">
-                Description:
+              {t('MyAccountPage.Description')}:
                </Typography>
                 <MDEditor.Markdown source={colItem.collectionMarkDownValue} style={{ whiteSpace: 'pre-wrap' }} />
               </Box>

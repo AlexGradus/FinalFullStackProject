@@ -7,11 +7,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Container, Grid, styled, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 
 
 
 const WelcomePage = () => {
+  const { t } = useTranslation();
   const[searchText,setSearchText] = useState('');
   const[observingItem,setObservingItem] = useState([]);
   const[tags,setTags] = useState([]);
@@ -86,7 +88,7 @@ const WelcomePage = () => {
                          search(item)
                     } }>
                         <Typography mt={1} align='center' component="h6" variant="h6">
-                         Tag: {item}
+                        {t('WelcomePage.Tag')}: {item}
                         </Typography>
                     </Container>
                 </Item>
@@ -108,7 +110,7 @@ const WelcomePage = () => {
                          navigate("/collection/items/item");
                     } }>
                         <Typography mt={1} align='center' component="h6" variant="h6">
-                         Found item: {item.itemName}
+                        {t('WelcomePage.Item')}: {item.itemName} 
                         </Typography>
                     </Container>
                 </Item>
