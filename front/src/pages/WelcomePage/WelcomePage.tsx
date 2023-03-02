@@ -17,8 +17,16 @@ const WelcomePage = () => {
   const[searchText,setSearchText] = useState('');
   const[observingItem,setObservingItem] = useState([]);
   const[tags,setTags] = useState([]);
+  const[lastItems,setLastItems] = useState([]);
+  const[ biggestCollection,setBiggestCollection] = useState([]);
   const navigate = useNavigate();
-
+  const images = {
+    img_1:'https://i.ibb.co/smW7Lm5/alcohol.jpg',
+    img_2:'https://i.ibb.co/8bSzGmG/oldbooks.webp',
+    img_3:'https://i.ibb.co/PhP1fM2/cars-cars.jpg',
+    img_4:'https://i.ibb.co/hBf56DG/dreamstime-s-29389535-2-1200x753.jpg',
+    img_5:'https://i.ibb.co/G7XRG7g/no-img.jpg',
+  }
 
 
   const searchItem = async(text:string)=>{
@@ -49,6 +57,31 @@ const WelcomePage = () => {
       } 
     }
    }
+   const getLastItems = async()=>{
+    try{
+      await axios.get("http://localhost:5000/api/auth/lastitems").then(res => {
+          setLastItems(res.data.topics.colItems)
+        })
+        
+    } catch(e){
+      if (axios.isAxiosError(e))  {
+        console.log(e.response?.data.message );
+      } 
+    }
+   }
+
+   const getBigCollection = async()=>{
+    try{
+      await axios.get("http://localhost:5000/api/auth/bigcollection").then(res => {
+          setBiggestCollection(res.data.BigCollections[0].collections)
+        })
+        
+    } catch(e){
+      if (axios.isAxiosError(e))  {
+        console.log(e.response?.data.message );
+      } 
+    }
+   }
  
   const search=(text:string)=>{
     searchItem(text)
@@ -62,6 +95,8 @@ const WelcomePage = () => {
   }));
   useEffect(() => {
     getTags("282")
+    getLastItems();
+    getBigCollection();
   },[]);
 
   return (
@@ -118,7 +153,76 @@ const WelcomePage = () => {
             })}
           </Grid>
         </Box>
-      </Container></>
+      </Container>
+      <Container>
+      <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.TitleNew')}:
+                        </Typography>
+         <Box mt={4}>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            {lastItems.map((item: any,index) => {
+                return <Grid key={index} item xs={6}>
+                <Item>
+                
+                    <Container onClick={() => {
+                         localStorage.setItem("ItemId", JSON.stringify(item.id));
+                         localStorage.setItem("CollectionName", JSON.stringify(item.collectionName));
+                         localStorage.setItem("EmailForItem", JSON.stringify(item.email));
+                         navigate("/collection/items/item");
+                    } }>
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.ItemName')}: {item.itemName} 
+                        </Typography>
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        Id: {item.id} 
+                        </Typography> 
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.CollectionName')}: {item.collectionName} 
+                       </Typography>
+                        <Typography mt={1} align='center' component="h6" variant="h6"> 
+                        {t('WelcomePage.UserEmail')}:{item.email} 
+                        </Typography>
+                    </Container>
+                </Item>
+              </Grid>;
+            })}
+          </Grid>
+        </Box>
+      </Container>
+      <Container>
+      <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.BigCollection')}:
+                        </Typography>
+         <Box mt={4}>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            {biggestCollection.map((item: any,index) => {
+                return <Grid key={index} item xs={12}>
+                <Item>
+                
+                    <Container>
+                    <Box><img width ='100px' src={(images as any)[item.collectionImage]} alt='img'/></Box>
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.MarkValue')}: {item.collectionMarkDownValue} 
+                        </Typography> 
+                       
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.Type')}: {item.collectionType} 
+                        </Typography> 
+
+                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        {t('WelcomePage.CollectionName')}: {item.collectionName} 
+                       </Typography>
+                        <Typography mt={1} align='center' component="h6" variant="h6"> 
+                        {t('WelcomePage.UserEmail')}:{item.email} 
+                        </Typography>
+                    </Container>
+                </Item>
+              </Grid>;
+            })}
+          </Grid>
+        </Box>
+      </Container>
+      </>
   );
 };
 export default WelcomePage;

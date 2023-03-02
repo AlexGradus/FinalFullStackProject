@@ -28,7 +28,14 @@
   },
   "WelcomePage": {
     "Tag":"Tag",
-    "Item":"Found Item"
+    "Item":"Found Item",
+    "TitleNew": "New Items",
+    "CollectionName": "Collection Name",
+    "UserEmail": "User Email",
+    "ItemName": "Item Name",
+    "BigCollection": "Big Collection",
+    "MarkValue": "Description",
+    "Type": "Type"
   },
   "AdminPage": {
     "MyAcc": "My Account",

@@ -146,8 +146,8 @@ export default function NewCollection() {
         addFields.push(item)
       }
     })
-
-    createCollection(userEmail,name,type,markDownValue,addFields,checked,ImagesForChoise.columns['column-2'].imagesId.join())
+    const colImage = ImagesForChoise.columns['column-2'].imagesId.join()?ImagesForChoise.columns['column-2'].imagesId.join():"img_5";
+    createCollection(userEmail,name,type,markDownValue,addFields,checked,colImage)
     
     setMarkDownValue('');
     setType('');

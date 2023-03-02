@@ -28,7 +28,15 @@
   },
   "WelcomePage": {
     "Tag":" Тэг",
-    "Item":"Найденный элемент"
+    "Item":"Найденный элемент",
+    "TitleNew": "Новые Itemы",
+    "CollectionName": "Название Коллекции",
+    "UserEmail": "Email пользователя",
+    "ItemName": "Имя  itemа",
+    "BigCollection": "Большая Коллекция",
+    "MarkValue": "Описание",
+    "Type": "Тип"
+
   },
   "AdminPage": {
     "MyAcc": "Мой Аккаунт",

@@ -25,6 +25,7 @@ export default function MyAccountPage() {
     img_2:'https://i.ibb.co/8bSzGmG/oldbooks.webp',
     img_3:'https://i.ibb.co/PhP1fM2/cars-cars.jpg',
     img_4:'https://i.ibb.co/hBf56DG/dreamstime-s-29389535-2-1200x753.jpg',
+    img_5:'https://i.ibb.co/G7XRG7g/no-img.jpg',
   }
   const [collection, setCollection] = useState([]);
  

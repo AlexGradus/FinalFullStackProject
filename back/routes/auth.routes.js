@@ -4,6 +4,8 @@ const UserItems = require("../models/UserItems");
 const Tags = require("../models/Tags");
 const UserCollection = require("../models/UserCollection");
 const Likes = require("../models/Likes");
+const LatestCollections = require("../models/LatestCollections");
+const LatestTopics = require("../models/LatestTopics");
 const bcrypt = require("bcrypt");
 const config = require("config");
 const {check, validationResult } = require("express-validator");
@@ -11,6 +13,7 @@ const jwt = require("jsonwebtoken");
 const router = new Router();
 const authMiddleWare = require("../middleware/auth.middleware");
 const mongoose = require("mongoose");
+
 
 router.post('/registration',[
     check('email','incorrect email').isEmail(),
@@ -98,6 +101,18 @@ router.post('/createcollection',async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+router.get('/lastitems', async (req, res) =>{
+    try {
+        const topics = await LatestTopics.findOne();
+        return res.json({
+            topics
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
 
 router.post('/createitem',async (req, res) =>{
     try {
@@ -137,7 +152,29 @@ router.post('/createitem',async (req, res) =>{
        if(IdDouble){
         return res.status(400).json({message:`Id already exists!`})
        }
-        const itemUpdate = await UserItems.findOne({email,collectionName});
+      
+       const TopicsUpdate = await LatestTopics.findOne();
+        
+       const newTopic={
+           itemName: itemName,
+           email: email,
+           collectionName: collectionName,
+           id: id,
+           
+       }
+       if(TopicsUpdate.colItems.length>5){
+           
+           TopicsUpdate.colItems.unshift(newTopic);
+           TopicsUpdate.colItems.pop();
+           await LatestTopics.updateOne({$set:{colItems:TopicsUpdate.colItems}});
+       } else{
+           TopicsUpdate.colItems.unshift(newTopic)
+          
+           await LatestTopics.updateOne({$set:{colItems:TopicsUpdate.colItems}});
+       }
+       
+       const itemUpdate = await UserItems.findOne({email,collectionName});
+       
         
         if(itemUpdate){
             const result = await UserItems.updateOne({email:email,collectionName:collectionName},{$push:{colItems:[{ itemName,
@@ -162,8 +199,40 @@ router.post('/createitem',async (req, res) =>{
                
               }]}});
               await UserItems.updateOne({email:email,collectionName:collectionName},{$set:{fieldsLocation:fieldsLocation}});
+              const LatestCollectionsUpdate = await LatestCollections.findOne();
+              const collection = await UserCollection.findOne({email});
+              const newCollection={}
+              collection.collections.forEach(item=>{
+                if(item.collectionName===collectionName){
+                    newCollection.collectionName = collectionName
+                    newCollection.email=email
+                    newCollection.collectionType=item.collectionType
+                    newCollection.collectionMarkDownValue=item.collectionMarkDownValue
+                    newCollection.collectionImage=item.collectionImage
+                    newCollection.itemLength = (itemUpdate.colItems.length+1)
+                }
+              })
+             
+              if(LatestCollectionsUpdate.collections.length<1){
+                LatestCollectionsUpdate.collections.push(newCollection);
+                await LatestCollections.updateOne({$set:{collections:LatestCollectionsUpdate.collections}});
+                } else{
+                        if(newCollection.itemLength>LatestCollectionsUpdate.collections[0].itemLength){
+                            LatestCollectionsUpdate.collections[0].collectionName =newCollection.collectionName;
+                            LatestCollectionsUpdate.collections[0].email=newCollection.email;
+                            LatestCollectionsUpdate.collections[0].collectionType=newCollection.collectionType;
+                            LatestCollectionsUpdate.collections[0].collectionMarkDownValue= newCollection.collectionMarkDownValue;
+                            LatestCollectionsUpdate.collections[0].collectionImage = newCollection.collectionImage;
+                            LatestCollectionsUpdate.collections[0].itemLength =  newCollection.itemLength;
+
+                        }
+                 
+                    await LatestCollections.updateOne({$set:{collections:LatestCollectionsUpdate.collections}})
+                }
             return res.json({message:'Item is created'});
         }
+       
+           
        
         const item = new UserItems({ email,collectionName,fieldsLocation,colItems:[{ itemName,
             id,
@@ -185,7 +254,9 @@ router.post('/createitem',async (req, res) =>{
             tags:[tags]
          
             }]});
-        await item.save();
+            
+            await item.save();
+       
         return res.json({message:'Item is created'});
 
     } catch(e){
@@ -283,6 +354,8 @@ router.post('/editcollection',async (req, res) =>{
         res.send({ message: 'Server Error' })
     }
 })
+
+
 
 router.post('/items', async (req, res) =>{
     try {
@@ -503,7 +576,6 @@ router.post('/findtext', async (req, res) =>{
                 for (const key in gt) {
                     if((typeof gt[key]==='string'||Array.isArray(gt[key]))){
                         if((Array.isArray((gt[key])&&gt[key].length>0)?gt[key].join().includes(text):gt[key].includes(text))){
-                            console.log(gt[key])
                             const editedItem={};
                             editedItem.email = item.email;
                              editedItem.collectionName = item.collectionName;
@@ -597,6 +669,18 @@ router.post('/getlikes', async (req, res) =>{
         
         return res.json({
             likes
+        })
+
+    } catch(e){
+        console.log(e);
+        res.send({ message: 'Server Error' })
+    }
+})
+router.get('/bigcollection', async (req, res) =>{
+    try {
+       const BigCollections = await LatestCollections.find();
+        return res.json({
+            BigCollections
         })
 
     } catch(e){
