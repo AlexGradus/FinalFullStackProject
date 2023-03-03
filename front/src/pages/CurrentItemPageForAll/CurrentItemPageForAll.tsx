@@ -29,7 +29,7 @@ export default function CurrentItemforAll() {
   const [markDownValueComments,setMarkDownValueComments] = useState('' as string | undefined);
   const Auth = useSelector((state:MyState)=>state.app.isAuth);
 
-
+ 
   const getCurrentItem = async(email:string,collectionName:string,id: string)=>{
     try{
         await axios.post("http://localhost:5000/api/auth//currentitem",{
@@ -81,10 +81,14 @@ export default function CurrentItemforAll() {
     
    
    }
-  useEffect(() => {
-    getCurrentItem(userEmail,collectionName,itemId)
+   useEffect(() => {
     getLikes(userEmail,collectionName,itemId)
-   },[]);
+    setInterval(() => {
+      getCurrentItem(userEmail,collectionName,itemId)
+    }, 5000);
+   }, []);
+ 
+ 
  
   const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
   const commentItem = async( email: string,
