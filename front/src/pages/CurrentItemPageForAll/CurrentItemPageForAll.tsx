@@ -83,6 +83,10 @@ export default function CurrentItemforAll() {
    }
    useEffect(() => {
     getLikes(userEmail,collectionName,itemId)
+    getCurrentItem(userEmail,collectionName,itemId)
+  
+   }, []);
+    useEffect(() => {
     setInterval(() => {
       getCurrentItem(userEmail,collectionName,itemId)
     }, 5000);

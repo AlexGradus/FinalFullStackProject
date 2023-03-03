@@ -39,6 +39,10 @@ export default function CurrentItem() {
   }
  
   useEffect(() => {
+     getCurrentItem(userEmail,collectionName,itemId)
+
+   }, []);
+  useEffect(() => {
     setInterval(() => {
       getCurrentItem(userEmail,collectionName,itemId)
     }, 5000);
