@@ -194,6 +194,7 @@ export default function NewCollection() {
       <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
       {t('NewCollection.DescriptionMark')}:
       </Typography>
+      
       <MDEditor
         value={markDownValue}
         onChange={setMarkDownValue}

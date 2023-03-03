@@ -102,7 +102,7 @@ const WelcomePage = () => {
   return (
     <><Paper
       component="form"
-      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400, margin: "0 auto", position: "relative", top: 50 }}
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 350, margin: "0 auto", position: "relative", top: 50 }}
     >
       <InputBase
         sx={{ ml: 1, flex: 1 }}
@@ -118,7 +118,11 @@ const WelcomePage = () => {
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {tags.map((item: any,index:number) => {
                 return <Grid key={index} item xs={6}>
-                <Item>
+                <Item sx={{
+                    '&:hover': {
+                     cursor: 'pointer'
+                               }
+                           }}>
                     <Container onClick={() => {
                          search(item)
                     } }>
@@ -137,8 +141,12 @@ const WelcomePage = () => {
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {observingItem.map((item: any,index) => {
                 return <Grid key={index} item xs={6}>
-                <Item>
-                    <Container onClick={() => {
+                <Item sx={{
+                    '&:hover': {
+                     cursor: 'pointer'
+                               }
+                           }}>
+                    <Container  onClick={() => {
                          localStorage.setItem("ItemId", JSON.stringify(item.id));
                          localStorage.setItem("CollectionName", JSON.stringify(item.collectionName));
                          localStorage.setItem("EmailForItem", JSON.stringify(item.email));
@@ -158,19 +166,23 @@ const WelcomePage = () => {
       <Typography mt={1} align='center' component="h6" variant="h6">
                         {t('WelcomePage.TitleNew')}:
                         </Typography>
-         <Box mt={4}>
+         <Box  mt={4}>
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {lastItems.map((item: any,index) => {
                 return <Grid key={index} item xs={6}>
-                <Item>
+                <Item  sx={{
+                    '&:hover': {
+                     cursor: 'pointer'
+                               }
+                           }}>
                 
-                    <Container onClick={() => {
+                    <Container  onClick={() => {
                          localStorage.setItem("ItemId", JSON.stringify(item.id));
                          localStorage.setItem("CollectionName", JSON.stringify(item.collectionName));
                          localStorage.setItem("EmailForItem", JSON.stringify(item.email));
                          navigate("/collection/items/item");
                     } }>
-                        <Typography mt={1} align='center' component="h6" variant="h6">
+                        <Typography className='s.text'  mt={1} align='center' component="h6" variant="h6">
                         {t('WelcomePage.ItemName')}: {item.itemName} 
                         </Typography>
                         <Typography mt={1} align='center' component="h6" variant="h6">
@@ -179,12 +191,12 @@ const WelcomePage = () => {
                         <Typography mt={1} align='center' component="h6" variant="h6">
                         {t('WelcomePage.CollectionName')}: {item.collectionName} 
                        </Typography>
-                        <Typography mt={1} align='center' component="h6" variant="h6"> 
+                        <Typography mt={1}  align='center' component="h6" variant="h6"> 
                         {t('WelcomePage.UserEmail')}:{item.email} 
                         </Typography>
                     </Container>
                 </Item>
-              </Grid>;
+              </Grid>
             })}
           </Grid>
         </Box>
@@ -197,7 +209,11 @@ const WelcomePage = () => {
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             {biggestCollection.map((item: any,index) => {
                 return <Grid key={index} item xs={12}>
-                <Item>
+                <Item sx={{
+                    '&:hover': {
+                     cursor: 'pointer'
+                               }
+                           }}>
                 
                     <Container>
                     <Box><img width ='100px' src={(images as any)[item.collectionImage]} alt='img'/></Box>

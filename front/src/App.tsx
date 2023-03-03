@@ -26,7 +26,22 @@ function App() {
     palette: {
      mode: darkMode?'dark':'light',
     },
+    
   });
+
+  darkTheme.typography.h6 = {
+    fontSize: '1 rem',
+    [darkTheme.breakpoints.up('xs')]: {
+      fontSize: '0.3rem',
+    },
+    [darkTheme.breakpoints.up('sm')]: {
+      fontSize: '0.6rem',
+    },
+    [darkTheme.breakpoints.up('md')]: {
+      fontSize: '1.1rem',
+    },
+  };
+  
   const Auth = useSelector((state:MyState)=>state.app.isAuth);
   const dispatch = useDispatch();
   useEffect(()=>{

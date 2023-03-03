@@ -284,11 +284,11 @@ const [open, setOpen] = useState(false);
         getTags('282')
       },[tags]);
       return(
-        <div>
+        <div >
       <Button  onClick={()=>handleClickOpen()} startIcon={<EditOutlinedIcon />}>
 
       </Button>
-      <Dialog
+      <Dialog 
         open={open}
         onClose={handleClose}
         aria-labelledby="alert-dialog-title"
@@ -297,9 +297,9 @@ const [open, setOpen] = useState(false);
         <DialogTitle id="alert-dialog-title">
         {t('Item.EditItem')} 
         </DialogTitle>
-        <DialogContent>
-        <Card  className= {s.box}>
-    <CardContent>
+        <DialogContent >
+        <Card  >
+    <CardContent className= {s.box} >
       <Box
       component="form"
       sx={{
@@ -314,6 +314,13 @@ const [open, setOpen] = useState(false);
       variant="outlined"
       value={id}
       onChange={ChangeId}
+     />
+      <TextField 
+      id="outlined-basic" 
+      label="Name" 
+      variant="outlined"
+      value={name}
+      onChange={ChangeName}
      />
      
       <Autocomplete
@@ -516,7 +523,7 @@ const [open, setOpen] = useState(false);
 
     <Button
               type="submit"
-              fullWidth
+             
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               onClick={()=> 

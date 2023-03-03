@@ -43,7 +43,7 @@ export default function CurrentItem() {
 
  
 return (
-  <Card sx={{ width: 275 }}>
+  <Card sx={{ width: 275, margin: "0 auto" }}>
      <div className={s.button} ><NavLink className={s.back_button_position} to ="/myaccount/items/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
   <CardContent>
   <div>

@@ -571,17 +571,23 @@ router.post('/findtext', async (req, res) =>{
         const resultItems = await UserItems.find({$text:{$search:text}});
         const involvedItems = [];
         resultItems.forEach(item=>{
+            
             item.colItems.forEach(gt=>{
                
                 for (const key in gt) {
                     if((typeof gt[key]==='string'||Array.isArray(gt[key]))){
-                        if((Array.isArray((gt[key])&&gt[key].length>0)?gt[key].join().includes(text):gt[key].includes(text))){
+                       
+                        if((Array.isArray((gt[key])&&gt[key].length>0)&&gt[key].join().includes(text)?gt[key].join().includes(text):gt[key].includes(text))){
+                          
+
+                            
                             const editedItem={};
                             editedItem.email = item.email;
                              editedItem.collectionName = item.collectionName;
                              editedItem.id = gt.id;
                              editedItem.itemName = gt.itemName;
                              involvedItems.push(editedItem);
+                             return
                         }
                     }
                     

@@ -150,13 +150,18 @@ return (
           </Typography>
      
       <Box  mt={3}>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid container height={100} rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
       {
           userList.map((user:any)=>{
             
             return <Grid key={user._id} item xs={6}>
-            <Item>
-            <Box className={s.editBar}>
+            <Item  sx={{
+                    '&:hover': {
+                     cursor: 'pointer'
+                               }
+                        }}>
+                          <Box className ={s.wrapper}>
+                            <Box className={s.editBar}>
             <Button onClick={()=>{blockUser(user._id)}}  startIcon={<DoDisturbOnIcon />}/>
             <Button onClick={()=>{unBlockUser(user._id)}}  startIcon={<DoNotDisturbOffIcon />}/>
             <Button onClick={()=>{adminUser(user._id)}}  startIcon={<SupervisorAccountIcon/>}/>
@@ -194,6 +199,8 @@ return (
        
               </Box>
               </Container>
+                          </Box>
+            
              
             </Item>
           </Grid>

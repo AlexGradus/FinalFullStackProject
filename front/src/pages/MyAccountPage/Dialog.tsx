@@ -106,8 +106,8 @@ const CustomDialog = (props:any) => {
           onChange={handleChange}
           label={t('NewCollection.Type')} 
         >
-          <MenuItem value={"Alcogol"}>Alcogol</MenuItem>
-          <MenuItem value={"Cigaretes"}>Cigaretes</MenuItem>
+          <MenuItem value={"Alcogol"}>Alcohol</MenuItem>
+          <MenuItem value={"Cigaretes"}>Cigarette</MenuItem>
           <MenuItem value={"Cars"}>Cars</MenuItem>
           <MenuItem value={"Books"}>Books</MenuItem>
         </Select>

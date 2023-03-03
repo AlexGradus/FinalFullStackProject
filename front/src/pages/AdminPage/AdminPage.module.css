@@ -1,11 +1,6 @@
 
 
-.button{
-    cursor: pointer;
-    text-decoration: none;
-    margin: 20px;
-    color: white;
-}
+
 
 .elements{
     display: flex;
@@ -22,11 +17,15 @@
    }
 .editBar{
     display: flex;
-    justify-content: space-between;
+    justify-content:left;
     flex-wrap: wrap;
     z-index: 8;
-    width: 100px;
-    position: absolute;
+    width: 10px;
+   
+   }
+
+   .wrapper{
+    display: flex;
    }
 
    .button{

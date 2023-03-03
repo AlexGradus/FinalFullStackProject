@@ -131,7 +131,7 @@ export default function CurrentItemforAll() {
    
  
 return (
-  <Card sx={{ width: 275 }}>
+  <Card sx={{ width: 275, margin: "0 auto" }}>
   <CardContent>
   <div className={s.button} ><NavLink className={s.back_button_position} to ="/"><Button variant="outlined">{t('Buttons.Back')}</Button></NavLink></div>
   <div>
