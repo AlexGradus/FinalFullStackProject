@@ -568,6 +568,29 @@ router.post('/findtext', async (req, res) =>{
     try {
         const {text} = req.body;
         const resultCollection = await UserCollection.find({$text:{$search:text}});
+        console.log(resultCollection)
+        const foundCollections=[];
+        resultCollection.forEach(item=>{
+            item.collections.forEach( gt=>{
+
+                for (const key in gt) {
+                    if(typeof gt[key]==='string'){
+                       
+                        if((gt[key].includes(text))){
+                            const collectionName = gt.collectionName;
+                            const email =item.email;
+                           
+                           const foundData={
+                            email:item.email,
+                            collectionName:gt.collectionName}
+                            foundCollections.push(foundData);
+                        }
+                    }
+                    
+                 }
+                
+            })
+        })
         const resultItems = await UserItems.find({$text:{$search:text}});
         const involvedItems = [];
         resultItems.forEach(item=>{
@@ -596,8 +619,31 @@ router.post('/findtext', async (req, res) =>{
                
             })
         })
+        if(!foundCollections==[]){
+             const foundItems=[];
+             for(let i=0;i<foundCollections.length;i++) {
+                const email=foundCollections[i].email;
+                const collectionName=foundCollections[i].collectionName
+                const items = await UserItems.findOne({email,collectionName});
+                if(items!==null){
+                    
+                    if(items!==null){
+                        items.colItems.forEach(item=>{
+                            const editedItem={};
+                            editedItem.email = email;
+                            editedItem.collectionName = collectionName;
+                            editedItem.id = item.id;
+                            editedItem.itemName = item.itemName;
+                            foundItems.push(editedItem)
+                        })
+                       
+                }}
+            }
+            const notIncludedBeforeItems = foundItems.filter(items => involvedItems.every(item => item.id !== items.id));
+            involvedItems.push(...notIncludedBeforeItems);
+        }
 
-       
+      
       return res.json({
         involvedItems
     })
