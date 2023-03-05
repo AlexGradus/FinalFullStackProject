@@ -1,0 +1,110 @@
+{
+  "Header": {
+    "Theme":"Dark",
+    "LanguageSwitcher":"Lang(ru,en)",
+    "SignIn":"Sign In",
+    "SignUp":"Sign Up",
+    "LogOut":"Log Out",
+    "Return":"Return to your Acc",
+    "Admin":"Admin",
+    "MyAcc":"My account"
+  },
+  "SignIn": {
+    "Title": "Sign In",
+    "InpLogin": "Email Address",
+    "InpPass": "Password",
+    "LoginError": "Email is required",
+    "PasswordError": "Password is required"
+    
+  },
+  "SignUp": {
+    "Title": "Sign Up",
+    "InpName": "Name",
+    "InpLogin": "Email",
+    "InpPass": "Password",
+    "LoginError": "Email is required",
+    "PasswordError": "Password is required",
+    "NameError":"Name is required"
+  },
+  "WelcomePage": {
+    "Tag":"Tag",
+    "Item":"Found Item",
+    "TitleNew": "New Items",
+    "CollectionName": "Collection Name",
+    "UserEmail": "User Email",
+    "ItemName": "Item Name",
+    "BigCollection": "Big Collection",
+    "MarkValue": "Description",
+    "Type": "Type"
+  },
+  "AdminPage": {
+    "MyAcc": "My Account",
+    "Name": "Name",
+    "Blocked": "Blocked",
+    "Admin": "Admin"
+  },
+  "Profile": {
+    "Title": "Edit your profile",
+    "InpName": "Name",
+    "InpLogin": "Login",
+    "InpPass": "New password"
+  },
+  "Buttons":{
+    "Back":"Back",
+    "CreateItem":"CREATE NEW ITEM",
+    "Create":"CREATE",
+    "Send":"Send",
+    "Close":"Close"
+
+  },
+  "GeneralItemsPage": {
+    "MyCollection": "My Collection"
+ 
+  },
+  "MyAccountPage": {
+    "MyAcc": "My Account",
+    "CreateCollection":"CREATE NEW COLLECTION",
+    "Name": "Name",
+    "Type": "Type",
+    "Description": "Description"
+    
+ 
+  },
+  "NewCollection": {
+    "Title": "New Collection",
+    "Type": "Type",
+    "DescriptionMark": "Description(Markdown)",
+    "AddFields":"Additional Fields",
+    "AllFields":"All",
+    "Name": "Name",
+    "Edit":"Edit"
+ 
+  },
+  "Item": {
+    "Title": "Item",
+    "TitleNew": "New Item",
+    "Name": "Name",
+    "Tags": "Tags(via ',')",
+    "MadeIn": "Made In",
+    "Description": "Description",
+    "Comments": "Comments",
+    "Damage": "Damage",
+    "Condition": "Condition",
+    "Notes": "Notes",
+    "Amount": "Amount",
+    "ReadyToSail": "Ready To Sail ($x100)",
+    "Cost":"Cost ($x100)",
+    "ForSale":"For Sale",
+    "Foreign":"Foreign",
+    "InStock":"In Stock",
+    "Created":"Created",
+    "Bought":"Bought",
+    "FirstRegistration":"First Registration",
+    "YourComment":"Your Comment",
+    "EditItem":"Edit"
+    
+ 
+  }
+  
+  
+}

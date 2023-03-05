@@ -1,0 +1,40 @@
+
+
+ .button{
+    cursor: pointer;
+    text-decoration: none;
+    margin: 20px;
+    color: black;
+}
+.back_button_position{
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.elements{
+    display: flex;
+    flex-direction: row;
+    
+}
+.text{
+    font-size: 20px;
+   }
+   
+.textLink{
+    text-decoration: none;
+    color: currentColor;
+   }
+.editBar{
+    display: flex;
+    justify-content: space-between;
+    z-index: 8;
+    width: 100px;
+   }
+@media(max-width: 768px){
+    .text{
+        
+     font-size: 13px;
+    }
+    }
+
+

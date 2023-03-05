@@ -1,0 +1,21 @@
+.box{
+    position: relative;
+    width: 500px;
+    margin: 0 auto;
+    top:50px;
+}
+
+.dragBox{
+    display: flex;
+}
+
+.button{
+    cursor: pointer;
+    text-decoration: none;
+    margin: 20px;
+    color: black;
+}
+.back_button_position{
+    cursor: pointer;
+    text-decoration: none;
+}

@@ -1,0 +1,101 @@
+{
+  "Header": {
+    "Theme":"Темный",
+    "LanguageSwitcher": "Язык(ру,англ)",
+    "SignIn":"Войти",
+    "SignUp":"Регистрация",
+    "LogOut":"Выйти",
+    "Return":"Вернуться в свой Акк",
+    "Admin":"Администратор",
+    "MyAcc":" Мой аккаунт"
+  },
+  "SignIn": {
+    "Title": "Вход",
+    "InpLogin": "Email адрес",
+    "InpPass": "Пароль",
+    "LoginError": "Требуется Email",
+    "PasswordError": "Требуется Пароль"
+   
+  },
+  "SignUp": {
+    "Title": "Регистрация",
+    "InpName": "Имя",
+    "InpLogin": "Email адрес",
+    "InpPass": "Пароль",
+    "LoginError": "Требуется Email",
+    "PasswordError": "Требуется Пароль",
+    "NameError":"Требуется Имя"
+  },
+  "WelcomePage": {
+    "Tag":" Тэг",
+    "Item":"Найденный элемент",
+    "TitleNew": "Новые Itemы",
+    "CollectionName": "Название Коллекции",
+    "UserEmail": "Email пользователя",
+    "ItemName": "Имя  itemа",
+    "BigCollection": "Большая Коллекция",
+    "MarkValue": "Описание",
+    "Type": "Тип"
+
+  },
+  "AdminPage": {
+    "MyAcc": "Мой Аккаунт",
+    "Name": "Имя",
+    "Blocked": "Заблокирован",
+    "Admin": "Администратор"
+  },
+  "Buttons":{
+    "Back":"Назад",
+    "CreateItem":" Создать ITEM",
+    "Create":"СОЗДАТЬ",
+    "Send":"Отправить",
+    "Close":"Закрыть"
+  },
+  "GeneralItemsPage": {
+    "MyCollection": "Моя Коллекция"
+ 
+  },
+  "MyAccountPage": {
+    "MyAcc": "Мой Аккаунт",
+    "CreateCollection":"Создать Коллекцию",
+    "Name": "Имя",
+    "Type": "Тип",
+    "Description": "Описание"
+ 
+  },
+  "NewCollection": {
+    "Title": "Новая Коллекция",
+    "Type": "Тип",
+    "DescriptionMark": "Описание(Markdown)",
+    "AddFields":"Дополнительные поля",
+    "AllFields":"Все",
+    "Name": "Имя",
+    "Edit":"Рeдактировать"
+ 
+  },
+  "Item": {
+    "Title": "Item",
+    "TitleNew": "Новый Item",
+    "Name": "Имя",
+    "Tags": "Тэги(через ',')",
+    "MadeIn": "Сделано в",
+    "Description": "Описание",
+    "Comments": "Комментарии",
+    "Damage": "Повреждение",
+    "Condition": "Состояние",
+    "Notes": "Заметки",
+    "Amount": "Количество",
+    "ReadyToSail": "Уступленная стоимость ($x100)",
+    "Cost":"Цена ($x100)",
+    "ForSale":"Для продажи",
+    "Foreign":"Иностранный",
+    "InStock":"В стоке",
+    "Created":"Сделан",
+    "Bought":"Куплен",
+    "FirstRegistration":"Первая Регистрация",
+    "YourComment":"Ваш комментарий",
+    "EditItem":"Редактировать"
+    
+ 
+  }
+}

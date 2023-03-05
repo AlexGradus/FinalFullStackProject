@@ -1,0 +1,35 @@
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    
+    align-items: center;
+
+    min-height: 100%;;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    
+
+    color: #EFF0F3;
+
+    background: linear-gradient(126.96deg, #56B8EF 7.02%, #5352ED 100.84%);
+}
+
+.button{
+    cursor: pointer;
+    text-decoration: none;
+    margin: 20px;
+}
+
+
+
+
+@media screen and (max-width: 768px)  {
+    .container {
+        
+
+        padding-top: 5%;
+        padding-bottom: 5%;
+    }
+    
+   
+}
